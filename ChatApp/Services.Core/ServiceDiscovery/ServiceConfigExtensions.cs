@@ -18,7 +18,6 @@ namespace Services.Core.ServiceDiscovery
                     Address = configuration.GetValue<string>("ServiceConfig:Address"),
                     Port = configuration.GetValue<int>("ServiceConfig:Port"),
                     DiscoveryAddress = configuration.GetValue<Uri>("ServiceConfig:DiscoveryAddress"),
-                    HealthCheckEndPoint = configuration.GetValue<string>("ServiceConfig:HealthCheckEndPoint"),
                };
 
                return serviceConfig;

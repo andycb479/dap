@@ -11,7 +11,6 @@ services:
           - ServiceConfig__DiscoveryAddress=http://consul:8500
           - ServiceConfig__Address=chatsessionservice
           - ServiceConfig__Port=80
-          - ServiceConfig__HealthCheckEndPoint=healthcheck
         ports:
             - 9100:80
         depends_on:

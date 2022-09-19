@@ -11,7 +11,5 @@
           public int Port { get; set; }
 
           public Uri DiscoveryAddress { get; set; }
-
-          public string HealthCheckEndPoint { get; set; }
      }
 }

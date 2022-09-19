@@ -16,3 +16,6 @@ services:
             - 9100:80
         depends_on:
             - consul
+networks:
+    common_network:
+        driver: bridge
