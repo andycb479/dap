@@ -1,0 +1,21 @@
+services:
+    consul:
+        ports:
+             - "8500:8500"
+
+    chatsessionservice:
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ServiceConfig__Id=ChatSessionService-9100
+          - ServiceConfig__Name=ChatSessionService
+          - ServiceConfig__DiscoveryAddress=http://consul:8500
+          - ServiceConfig__Address=chatsessionservice
+          - ServiceConfig__Port=80
+          - ServiceConfig__HealthCheckEndPoint=healthcheck
+        ports:
+            - 9100:80
+        depends_on:
+            - consul
+networks:
+    common_network:
+        driver: bridge

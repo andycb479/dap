@@ -1,0 +1,19 @@
+services:
+   consul:
+        image: consul:latest
+        command: consul agent -dev -log-level=warn -ui -client=0.0.0.0
+        hostname: consul
+        container_name: consul
+        networks:
+            - common_network
+
+   chatsessionservice:
+        container_name: chatsessionservice
+        image: chatsessionservice:latest
+        restart: on-failure
+        hostname: chatsessionservice
+        build:
+            context: .
+            dockerfile: ChatSessionService/Dockerfile
+        networks:
+            - common_network
