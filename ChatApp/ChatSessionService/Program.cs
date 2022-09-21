@@ -1,3 +1,6 @@
+using System.Reflection;
+using ChatSessionService.Configuration;
+using ChatSessionService.Infrastructure.Mapper;
 using ChatSessionService.Services;
 using Services.Core.ServiceDiscovery;
 
@@ -8,7 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
-// builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
+builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
+
+builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MapperIndex)));
+
+builder.Services.ConfigureDataLayer(builder.Configuration);
+builder.Services.ConfigureBusinessLayer(builder.Configuration);
 
 var app = builder.Build();
 
@@ -19,6 +27,7 @@ app.UseEndpoints(endpoints =>
 {
      endpoints.MapGrpcService<GreeterService>();
      endpoints.MapGrpcService<HealthCheckService>();
+     endpoints.MapGrpcService<MessagesService>();
 
      endpoints.MapGet("/", async context =>
      {

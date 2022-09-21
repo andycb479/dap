@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Core", "Services.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService", "ChatSessionService\ChatSessionService.csproj", "{D488B531-172E-4A0C-8C13-1924A496C637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSesssionService.DAL.Service", "ChatSesssionService.DAL.Service\ChatSesssionService.DAL.Service.csproj", "{BF695F50-2F3D-4877-9FDC-9D7E6563E901}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.DAL.Service", "ChatSesssionService.DAL.Service\ChatSessionService.DAL.Service.csproj", "{BF695F50-2F3D-4877-9FDC-9D7E6563E901}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.DAL.Interface", "ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj", "{D0060ABB-3478-4C95-B547-845B7ECB8F73}"
 EndProject

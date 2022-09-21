@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option csharp_namespace = "ChatSessionService";
+
+package messages;
+
+// The greeting service definition.
+service Messages {
+  // Sends a greeting
+  rpc SendMessage(SendMessageRequest) returns (SendMessageReply);
+  rpc GetChatMessages(GetChatMessagesRequest) returns (stream Message);
+}
+
+// The request message containing the user's name.
+message SendMessageRequest {
+  string messageContent = 1;
+  int32 fromUserId = 2;
+  int32 toUserId = 3;
+}
+
+// The response message containing the greetings.
+message SendMessageReply {
+  string response = 1;
+}
+
+message GetChatMessagesRequest {
+  int32 requestUserId = 2;
+  int32 chatUserId = 3;
+}
+
+message Message {
+  int32 messageStatus = 1;
+  int32 fromUserId = 2;
+  int32 toUserId = 3;
+  string date = 4;
+  string messageContent = 5;
+}
