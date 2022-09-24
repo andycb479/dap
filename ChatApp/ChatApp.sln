@@ -7,15 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Core", "Services.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService", "ChatSessionService\ChatSessionService.csproj", "{D488B531-172E-4A0C-8C13-1924A496C637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.DAL.Service", "ChatSesssionService.DAL.Service\ChatSessionService.DAL.Service.csproj", "{BF695F50-2F3D-4877-9FDC-9D7E6563E901}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.DAL.Service", "ChatSesssionService.DAL.Service\ChatSessionService.DAL.Service.csproj", "{BF695F50-2F3D-4877-9FDC-9D7E6563E901}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.DAL.Interface", "ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj", "{D0060ABB-3478-4C95-B547-845B7ECB8F73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.DAL.Interface", "ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj", "{D0060ABB-3478-4C95-B547-845B7ECB8F73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.BL.Service", "ChatSessionService.BL.Service\ChatSessionService.BL.Service.csproj", "{018F2551-FB67-4CD8-A416-813314E3FC62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Service", "ChatSessionService.BL.Service\ChatSessionService.BL.Service.csproj", "{018F2551-FB67-4CD8-A416-813314E3FC62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.BL.Interface", "ChatSessionService.BL.Interface\ChatSessionService.BL.Interface.csproj", "{E9BF122E-176F-4E4B-87B9-EF2244F38D2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Interface", "ChatSessionService.BL.Interface\ChatSessionService.BL.Interface.csproj", "{E9BF122E-176F-4E4B-87B9-EF2244F38D2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.Infrastructure", "ChatSessionService.Infrastructure\ChatSessionService.Infrastructure.csproj", "{B29F03B0-42D6-4535-B47C-27E5FC8772EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.Infrastructure", "ChatSessionService.Infrastructure\ChatSessionService.Infrastructure.csproj", "{B29F03B0-42D6-4535-B47C-27E5FC8772EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageDistributionService", "MessageDistributionService\MessageDistributionService.csproj", "{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{B29F03B0-42D6-4535-B47C-27E5FC8772EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B29F03B0-42D6-4535-B47C-27E5FC8772EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B29F03B0-42D6-4535-B47C-27E5FC8772EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

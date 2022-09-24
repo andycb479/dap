@@ -17,3 +17,14 @@ services:
             dockerfile: ChatSessionService/Dockerfile
         networks:
             - common_network
+            
+   messagedistributionservice:
+        container_name: messagedistributionservice
+        image: messagedistributionservice:latest
+        restart: on-failure
+        hostname: messagedistributionservice
+        build:
+            context: .
+            dockerfile: MessageDistributionService/Dockerfile
+        networks:
+            - common_network
