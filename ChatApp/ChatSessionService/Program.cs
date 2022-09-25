@@ -1,8 +1,8 @@
 using System.Reflection;
 using ChatSessionService.Configuration;
-using ChatSessionService.Infrastructure.Mapper;
 using ChatSessionService.Services;
 using Services.Core.ServiceDiscovery;
+using Services.Infrastructure.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 

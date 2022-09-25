@@ -1,12 +1,12 @@
-﻿using ChatSessionService.DAL.Interface;
-using ChatSessionService.Infrastructure.Attributes;
-using ChatSessionService.Infrastructure.Configurations;
+﻿using System.Linq.Expressions;
+using ChatSessionService.DAL.Interface;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Linq.Expressions;
-using ChatSessionService.Infrastructure.Entity;
+using Services.Infrastructure.Attributes;
+using Services.Infrastructure.Configurations;
+using Services.Infrastructure.Entity;
 
-namespace ChatSesssionService.DAL.Service
+namespace ChatSessionService.DAL.Service
 {
      public class MongoRepository<TDocument> : IMongoRepository<TDocument>
          where TDocument : IDocument

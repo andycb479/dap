@@ -1,8 +1,7 @@
 ﻿using ChatSessionService.DAL.Interface;
 using ChatSessionService.DAL.Service;
-using ChatSessionService.Infrastructure.Configurations;
-using ChatSesssionService.DAL.Service;
 using Microsoft.Extensions.Options;
+using Services.Infrastructure.Configurations;
 
 namespace ChatSessionService.Configuration
 {

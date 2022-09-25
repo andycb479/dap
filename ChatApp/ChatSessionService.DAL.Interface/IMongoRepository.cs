@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using ChatSessionService.Infrastructure.Entity;
+using Services.Infrastructure.Entity;
 
 namespace ChatSessionService.DAL.Interface
 {

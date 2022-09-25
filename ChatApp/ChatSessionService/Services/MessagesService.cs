@@ -1,7 +1,7 @@
 ﻿using ChatSessionService.BL.Interface;
 using ChatSessionService.ExternalServices;
-using ChatSessionService.Infrastructure.Enums;
 using Grpc.Core;
+using Services.Infrastructure.Enums;
 
 namespace ChatSessionService.Services
 {
@@ -25,7 +25,7 @@ namespace ChatSessionService.Services
 
           public override async Task<GenericReply> SendMessage(SendMessageRequest request, ServerCallContext context)
           {
-               await _messagesService.InsertMessage(new Infrastructure.Entity.Message
+               await _messagesService.InsertMessage(new global::Services.Infrastructure.Entity.Message
                {
                     FromUserId = request.FromUserId,
                     ToUserId = request.ToUserId,
@@ -55,7 +55,7 @@ namespace ChatSessionService.Services
                }
           }
 
-          private IEnumerable<Message> MapProtoMessageToAppMessage (IEnumerable<Infrastructure.Entity.Message> messages)
+          private IEnumerable<Message> MapProtoMessageToAppMessage (IEnumerable<global::Services.Infrastructure.Entity.Message> messages)
           {
                return messages.Select(message => new Message
                     {

@@ -1,4 +1,4 @@
-﻿namespace ChatSessionService.Infrastructure.Attributes
+﻿namespace Services.Infrastructure.Attributes
 {
      [AttributeUsage(AttributeTargets.Class, Inherited = false)]
      public class BsonCollectionAttribute : Attribute

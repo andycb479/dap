@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj" />
-    <ProjectReference Include="..\ChatSessionService.Infrastructure\ChatSessionService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ChatSessionService.Infrastructure\Services.Infrastructure.csproj" />
     <ProjectReference Include="..\Services.Core\Services.Core.csproj" />
   </ItemGroup>
 

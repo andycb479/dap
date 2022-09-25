@@ -30,7 +30,7 @@
     <ProjectReference Include="..\ChatSessionService.BL.Interface\ChatSessionService.BL.Interface.csproj" />
     <ProjectReference Include="..\ChatSessionService.BL.Service\ChatSessionService.BL.Service.csproj" />
     <ProjectReference Include="..\ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj" />
-    <ProjectReference Include="..\ChatSessionService.Infrastructure\ChatSessionService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ChatSessionService.Infrastructure\Services.Infrastructure.csproj" />
     <ProjectReference Include="..\ChatSesssionService.DAL.Service\ChatSessionService.DAL.Service.csproj" />
     <ProjectReference Include="..\Services.Core\Services.Core.csproj" />
   </ItemGroup>

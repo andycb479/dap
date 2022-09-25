@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ChatSessionService.Infrastructure.Entity
+namespace Services.Infrastructure.Entity
 {
     public interface IDocument
     {

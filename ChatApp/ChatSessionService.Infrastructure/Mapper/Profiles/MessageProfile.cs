@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace ChatSessionService.Infrastructure.Mapper.Profiles
+namespace Services.Infrastructure.Mapper.Profiles
 {
      public class MessageProfile : Profile
      {

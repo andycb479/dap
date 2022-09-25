@@ -1,4 +1,4 @@
-﻿using ChatSessionService.Infrastructure.Entity;
+﻿using Services.Infrastructure.Entity;
 
 namespace ChatSessionService.BL.Interface
 {

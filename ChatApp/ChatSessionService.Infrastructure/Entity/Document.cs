@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace ChatSessionService.Infrastructure.Entity;
+namespace Services.Infrastructure.Entity;
 
 public abstract class Document : IDocument
 {

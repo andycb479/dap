@@ -1,6 +1,6 @@
 ﻿using ChatSessionService.BL.Interface;
 using ChatSessionService.DAL.Interface;
-using ChatSessionService.Infrastructure.Entity;
+using Services.Infrastructure.Entity;
 
 namespace ChatSessionService.BL.Service
 {

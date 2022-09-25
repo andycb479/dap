@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Interface", "ChatSessionService.BL.Interface\ChatSessionService.BL.Interface.csproj", "{E9BF122E-176F-4E4B-87B9-EF2244F38D2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.Infrastructure", "ChatSessionService.Infrastructure\ChatSessionService.Infrastructure.csproj", "{B29F03B0-42D6-4535-B47C-27E5FC8772EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Infrastructure", "ChatSessionService.Infrastructure\Services.Infrastructure.csproj", "{B29F03B0-42D6-4535-B47C-27E5FC8772EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageDistributionService", "MessageDistributionService\MessageDistributionService.csproj", "{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageDistributionService", "MessageDistributionService\MessageDistributionService.csproj", "{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

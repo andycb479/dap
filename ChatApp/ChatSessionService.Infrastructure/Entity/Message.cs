@@ -1,7 +1,7 @@
-﻿using ChatSessionService.Infrastructure.Attributes;
-using ChatSessionService.Infrastructure.Enums;
+﻿using Services.Infrastructure.Attributes;
+using Services.Infrastructure.Enums;
 
-namespace ChatSessionService.Infrastructure.Entity
+namespace Services.Infrastructure.Entity
 {
      [BsonCollection("messages")]
      public class Message : Document

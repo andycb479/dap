@@ -1,4 +1,4 @@
-﻿namespace ChatSessionService.Infrastructure.Configurations;
+﻿namespace Services.Infrastructure.Configurations;
 
 public class MongoDbSettings : IMongoDbSettings
 {

@@ -1,10 +1,9 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using ChatSessionService.DAL.Interface;
-using ChatSessionService.Infrastructure.Configurations;
-using ChatSessionService.Infrastructure.Entity;
-using ChatSessionService.Infrastructure.Enums;
-using ChatSesssionService.DAL.Service;
 using MongoDB.Driver;
+using Services.Infrastructure.Configurations;
+using Services.Infrastructure.Entity;
+using Services.Infrastructure.Enums;
 
 namespace ChatSessionService.DAL.Service
 {

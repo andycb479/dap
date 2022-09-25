@@ -1,9 +1,9 @@
-﻿namespace ChatSessionService.Infrastructure.Enums
+﻿namespace Services.Infrastructure.Enums
 {
      public enum MessageStatus
      {
-          Sent = 0,
-          Delivered = 1,
-          Seen = 2
+          Sent = 1,
+          Delivered = 2,
+          Seen = 3
      }
 }
