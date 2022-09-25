@@ -1,15 +1,20 @@
-﻿using ChatSessionService.ExternalServices.Interface;
+﻿using ChatSessionService.DAL.Interface;
+using ChatSessionService.ExternalServices.Interface;
 using Grpc.Net.Client;
 using MessageDistributionService;
 using Services.Infrastructure.Entity;
+using Services.Infrastructure.Enums;
 
 namespace ChatSessionService.ExternalServices
 {
      public class DistributionService : IDistributionService
     {
-        public DistributionService()
-        {
-        }
+         private readonly IMessagesRepository _messagesRepository;
+
+         public DistributionService(IMessagesRepository messagesRepository)
+         {
+              _messagesRepository = messagesRepository;
+         }
 
         public async void RedirectMessage(MessageEntity message)
         {
@@ -30,7 +35,8 @@ namespace ChatSessionService.ExternalServices
                   var task = client.RedirectMessageAsync(request).ResponseAsync;
                   if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
                   {
-                       Console.WriteLine($"Delivered {message.Id}");
+                       message.MessageStatus = MessageStatus.Delivered;
+                       await _messagesRepository.ReplaceOneAsync(message);
                   } 
 
              }
