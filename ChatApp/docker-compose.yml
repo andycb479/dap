@@ -6,6 +6,13 @@ services:
         container_name: consul
         networks:
             - common_network
+   redis:
+        image: redis:6.2-alpine
+        command: redis-server --save 20 1 --loglevel warning
+        hostname: redis
+        container_name: redis
+        networks:
+            - common_network
 
    chatsessionservice1:
         container_name: chatsessionservice1
