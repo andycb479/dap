@@ -1,7 +1,9 @@
 ﻿using ChatSessionService.BL.Interface;
-using ChatSessionService.ExternalServices;
+using ChatSessionService.ExternalServices.Interface;
 using Grpc.Core;
+using Services.Infrastructure;
 using Services.Infrastructure.Enums;
+using Entity = Services.Infrastructure.Entity;
 
 namespace ChatSessionService.Services
 {
@@ -25,24 +27,31 @@ namespace ChatSessionService.Services
 
           public override async Task<GenericReply> SendMessage(SendMessageRequest request, ServerCallContext context)
           {
-               await _messagesService.InsertMessage(new global::Services.Infrastructure.Entity.Message
+               try
                {
-                    FromUserId = request.FromUserId,
-                    ToUserId = request.ToUserId,
-                    MessageContent = request.MessageContent,
-                    MessageStatus = MessageStatus.Sent
-               });
+                    var messageEntity = new Entity.MessageEntity
+                    {
+                         FromUserId = request.FromUserId,
+                         ToUserId = request.ToUserId,
+                         MessageContent = request.MessageContent,
+                         MessageStatus = MessageStatus.Sent
+                    };
 
-               await _distributionService.RedirectMessage(new Message
+                    await _messagesService.InsertMessage(messageEntity);
+
+                    _distributionService.RedirectMessage(messageEntity);
+
+                    return await Task.FromResult(new GenericReply { Response = "Message sent." });
+               }
+               catch (ValidationException e)
                {
-                    FromUserId = request.FromUserId,
-                    ToUserId = request.ToUserId,
-                    MessageContent = request.MessageContent,
-                    MessageStatus = (int)MessageStatus.Sent,
-                    Date = DateTime.UtcNow.ToShortTimeString()
-               });
+                    return await Task.FromResult(new GenericReply { Response = e.Message });
+               }
+               catch (Exception e)
+               {
+                    return await Task.FromResult(new GenericReply { Response = "Message sent failed." });
+               }
 
-               return await Task.FromResult(new GenericReply { Response = "Message received." + request.MessageContent });
           }
 
           public override async Task GetChatMessages(ChatRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context){
@@ -55,7 +64,7 @@ namespace ChatSessionService.Services
                }
           }
 
-          private IEnumerable<Message> MapProtoMessageToAppMessage (IEnumerable<global::Services.Infrastructure.Entity.Message> messages)
+          private IEnumerable<Message> MapProtoMessageToAppMessage (IEnumerable<global::Services.Infrastructure.Entity.MessageEntity> messages)
           {
                return messages.Select(message => new Message
                     {

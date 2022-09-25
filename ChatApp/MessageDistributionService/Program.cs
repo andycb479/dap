@@ -1,3 +1,5 @@
+using MessageDistributionService.ExternalServices;
+using MessageDistributionService.ExternalServices.Interface;
 using MessageDistributionService.Services;
 using Services.Core.ServiceDiscovery;
 
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
+
+builder.Services.AddScoped<IGatewayService, GatewayService>();
 
 var app = builder.Build();
 

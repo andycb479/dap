@@ -1,5 +1,7 @@
-﻿using Grpc.Net.Client;
+﻿using ChatSessionService.ExternalServices.Interface;
+using Grpc.Net.Client;
 using MessageDistributionService;
+using Services.Infrastructure.Entity;
 
 namespace ChatSessionService.ExternalServices
 {
@@ -9,22 +11,33 @@ namespace ChatSessionService.ExternalServices
         {
         }
 
-        public async Task RedirectMessage(Message message)
+        public async void RedirectMessage(MessageEntity message)
         {
-            var channel = GrpcChannel.ForAddress("http://localhost:5287");
-            var client = new MessageDistribution.MessageDistributionClient(channel);
+             try
+             {
+                  var channel = GrpcChannel.ForAddress("http://localhost:5287");
+                  var client = new MessageDistribution.MessageDistributionClient(channel);
 
-            var request = new RedirectMessageRequest
-            {
-                MessageContent = message.MessageContent,
-                FromUserId = message.FromUserId,
-                ToUserId = message.ToUserId,
-                Date = message.Date
-            };
+                  var request = new RedirectMessageRequest
+                  {
+                       MessageContent = message.MessageContent,
+                       FromUserId = message.FromUserId,
+                       ToUserId = message.ToUserId,
+                       Date = message.CreatedAt.ToShortDateString()
+                  };
 
-            var response = await client.RedirectMessageAsync(request);
+                  int timeout = 1000;
+                  var task = client.RedirectMessageAsync(request).ResponseAsync;
+                  if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
+                  {
+                       Console.WriteLine($"Delivered {message.Id}");
+                  } 
 
-            Console.WriteLine(response.Status);
+             }
+             catch (Exception e)
+             {
+                  Console.WriteLine(e);
+             }
         }
     }
 }

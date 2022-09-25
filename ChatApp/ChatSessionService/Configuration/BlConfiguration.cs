@@ -1,6 +1,7 @@
 ﻿using ChatSessionService.BL.Interface;
 using ChatSessionService.BL.Service;
 using ChatSessionService.ExternalServices;
+using ChatSessionService.ExternalServices.Interface;
 
 namespace ChatSessionService.Configuration;
 
