@@ -6,5 +6,6 @@ namespace ChatSessionService.BL.Interface
      {
           Task InsertMessage(Message message);
           Task<IEnumerable<Message>> GetChatMessages(int requestUserId, int chatUserId);
+          Task ChangeMessagesForChatToSeen(int requestUserId, int chatUserId);
      }
 }

@@ -3,19 +3,19 @@ services:
         ports:
              - "8500:8500"
 
-    chatsessionservice:
+    chatsessionservice1:
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
           - ServiceConfig__Id=ChatSessionService-9100
           - ServiceConfig__Name=ChatSessionService
           - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__Address=chatsessionservice
+          - ServiceConfig__Address=chatsessionservice1
           - ServiceConfig__Port=80
         ports:
             - 9100:80
         depends_on:
             - consul
-            
+             
     messagedistributionservice:
         environment:
           - ASPNETCORE_ENVIRONMENT=Development

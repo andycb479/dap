@@ -7,17 +7,17 @@ services:
         networks:
             - common_network
 
-   chatsessionservice:
-        container_name: chatsessionservice
+   chatsessionservice1:
+        container_name: chatsessionservice1
         image: chatsessionservice:latest
         restart: on-failure
-        hostname: chatsessionservice
+        hostname: chatsessionservice1
         build:
             context: .
             dockerfile: ChatSessionService/Dockerfile
         networks:
             - common_network
-            
+                   
    messagedistributionservice:
         container_name: messagedistributionservice
         image: messagedistributionservice:latest

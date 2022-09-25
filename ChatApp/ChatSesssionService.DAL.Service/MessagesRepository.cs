@@ -1,7 +1,10 @@
-﻿using ChatSessionService.DAL.Interface;
+﻿using System.Security.Cryptography.X509Certificates;
+using ChatSessionService.DAL.Interface;
 using ChatSessionService.Infrastructure.Configurations;
 using ChatSessionService.Infrastructure.Entity;
+using ChatSessionService.Infrastructure.Enums;
 using ChatSesssionService.DAL.Service;
+using MongoDB.Driver;
 
 namespace ChatSessionService.DAL.Service
 {
@@ -17,6 +20,17 @@ namespace ChatSessionService.DAL.Service
                     x.FromUserId == requestUserId && x.ToUserId == chatUserId ||
                     x.FromUserId == chatUserId && x.ToUserId == requestUserId);
                return messages;
+          }
+
+          public async Task UpdateUserChatMessagesToSeen(int requestUserId, int chatUserId)
+          {
+               var builder = Builders<Message>.Filter;
+               var filter = builder.Eq(_ => _.FromUserId, chatUserId);
+               filter &= builder.Eq(_ => _.ToUserId, requestUserId);
+
+               var update = Builders<Message>.Update.Set(x => x.MessageStatus, MessageStatus.Seen);
+
+               await Collection.UpdateManyAsync(filter, update);
           }
      }
 }

@@ -25,7 +25,6 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
-     endpoints.MapGrpcService<GreeterService>();
      endpoints.MapGrpcService<HealthCheckService>();
      endpoints.MapGrpcService<MessagesService>();
 

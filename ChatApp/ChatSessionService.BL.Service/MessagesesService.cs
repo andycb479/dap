@@ -22,5 +22,10 @@ namespace ChatSessionService.BL.Service
                var messages = await _messagesRepository.GetChatMessages(requestUserId, chatUserId);
                return messages.OrderBy(x => x.CreatedAt);
           }
+
+          public async Task ChangeMessagesForChatToSeen(int requestUserId, int chatUserId)
+          {
+               await _messagesRepository.UpdateUserChatMessagesToSeen(requestUserId, chatUserId);
+          }
      }
 }

@@ -1,4 +1,5 @@
 ﻿using ChatSessionService.BL.Interface;
+using ChatSessionService.ExternalServices;
 using ChatSessionService.Infrastructure.Enums;
 using Grpc.Core;
 
@@ -7,12 +8,22 @@ namespace ChatSessionService.Services
      public class MessagesService : Messages.MessagesBase
      {
           private readonly IMessagesService _messagesService;
+          private readonly IDistributionService _distributionService;
 
-          public MessagesService(IMessagesService messagesService)
+          public MessagesService(IMessagesService messagesService, IDistributionService distributionService)
           {
                _messagesService = messagesService;
+               _distributionService = distributionService;
           }
-          public override async Task<SendMessageReply> SendMessage(SendMessageRequest request, ServerCallContext context)
+
+          public override async Task<GenericReply> ChangeMessagesForChatToSeen(ChatRequest request, ServerCallContext context)
+          {
+               await _messagesService.ChangeMessagesForChatToSeen(request.RequestUserId, request.ChatUserId);
+
+               return await Task.FromResult(new GenericReply { Response = "Updated" });
+          }
+
+          public override async Task<GenericReply> SendMessage(SendMessageRequest request, ServerCallContext context)
           {
                await _messagesService.InsertMessage(new Infrastructure.Entity.Message
                {
@@ -22,10 +33,19 @@ namespace ChatSessionService.Services
                     MessageStatus = MessageStatus.Sent
                });
 
-               return await Task.FromResult(new SendMessageReply { Response = "Message received." + request.MessageContent });
+               await _distributionService.RedirectMessage(new Message
+               {
+                    FromUserId = request.FromUserId,
+                    ToUserId = request.ToUserId,
+                    MessageContent = request.MessageContent,
+                    MessageStatus = (int)MessageStatus.Sent,
+                    Date = DateTime.UtcNow.ToShortTimeString()
+               });
+
+               return await Task.FromResult(new GenericReply { Response = "Message received." + request.MessageContent });
           }
 
-          public override async Task GetChatMessages(GetChatMessagesRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context){
+          public override async Task GetChatMessages(ChatRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context){
                var messages =  await _messagesService.GetChatMessages(request.RequestUserId, request.ChatUserId);
                var mappedMessages = MapProtoMessageToAppMessage(messages);
 

@@ -19,6 +19,7 @@ app.UseEndpoints(endpoints =>
 {
      endpoints.MapGrpcService<GreeterService>();
      endpoints.MapGrpcService<HealthCheckService>();
+     endpoints.MapGrpcService<MessageDistributionService.Services.MessageDistributionService>();
 
      endpoints.MapGet("/", async context =>
      {
