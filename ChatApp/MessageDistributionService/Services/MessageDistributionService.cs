@@ -1,4 +1,5 @@
 ﻿using Grpc.Core;
+using Services.Infrastructure.Enums;
 
 namespace MessageDistributionService.Services
 {
@@ -8,7 +9,7 @@ namespace MessageDistributionService.Services
           {
                return Task.FromResult(new RedirectMessageReply()
                {
-                    Status = "Awaiting"
+                    DistributionStatus = (int) DistributionStatus.Delivered
                });
           }
      }
