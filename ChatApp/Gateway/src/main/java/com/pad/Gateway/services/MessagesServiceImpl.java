@@ -1,23 +1,23 @@
 package com.pad.Gateway.services;
 
-import com.pad.Gateway.grpc.*;
 import io.grpc.stub.StreamObserver;
 
-public class MessagesServiceImpl extends MessagesGrpc.MessagesImplBase {
+public class MessagesServiceImpl extends messages.MessagesGrpc.MessagesImplBase {
   @Override
   public void sendMessage(
-      SendMessageRequest request, StreamObserver<GenericReply> responseObserver) {
+      messages.SendMessageRequest request, StreamObserver<messages.GenericReply> responseObserver) {
     System.out.println(request.getMessageContent());
   }
 
   @Override
-  public void getChatMessages(ChatRequest request, StreamObserver<Message> responseObserver) {
+  public void getChatMessages(
+      messages.ChatRequest request, StreamObserver<messages.Message> responseObserver) {
     System.out.println(request.getChatUserId());
   }
 
   @Override
   public void changeMessagesForChatToSeen(
-      ChatRequest request, StreamObserver<GenericReply> responseObserver) {
+      messages.ChatRequest request, StreamObserver<messages.GenericReply> responseObserver) {
     System.out.println(request.getChatUserId());
   }
 }

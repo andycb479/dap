@@ -1,6 +1,6 @@
 syntax = "proto3";
 option java_multiple_files = true;
-package com.pad.Gateway.grpc;
+package messages;
 
 service Messages {
   rpc SendMessage(SendMessageRequest) returns (GenericReply);

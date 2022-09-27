@@ -1,11 +1,11 @@
 package com.pad.Gateway.services;
 
-import com.pad.Gateway.grpc.GenericReply;
-import com.pad.Gateway.grpc.MessagesGrpc;
-import com.pad.Gateway.grpc.SendMessageRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
+import messages.GenericReply;
+import messages.MessagesGrpc;
+import messages.SendMessageRequest;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
