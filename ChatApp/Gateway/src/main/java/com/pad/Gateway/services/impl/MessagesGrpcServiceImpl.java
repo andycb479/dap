@@ -1,8 +1,8 @@
-package com.pad.Gateway.services;
+package com.pad.Gateway.services.impl;
 
 import io.grpc.stub.StreamObserver;
 
-public class MessagesServiceImpl extends messages.MessagesGrpc.MessagesImplBase {
+public class MessagesGrpcServiceImpl extends messages.MessagesGrpc.MessagesImplBase {
   @Override
   public void sendMessage(
       messages.SendMessageRequest request, StreamObserver<messages.GenericReply> responseObserver) {
