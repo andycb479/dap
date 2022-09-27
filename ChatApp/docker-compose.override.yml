@@ -15,19 +15,6 @@ services:
             - 9100:80
         depends_on:
             - consul
-
-    chatsessionservice2:
-        environment:
-          - ASPNETCORE_ENVIRONMENT=Development
-          - ServiceConfig__Id=ChatSessionService-9200
-          - ServiceConfig__Name=ChatSessionService
-          - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__Address=chatsessionservice
-          - ServiceConfig__Port=80
-        ports:
-            - 9200:80
-        depends_on:
-            - consul
 networks:
     common_network:
         driver: bridge

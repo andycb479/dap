@@ -17,14 +17,3 @@ services:
             dockerfile: ChatSessionService/Dockerfile
         networks:
             - common_network
-
-   chatsessionservice2:
-        container_name: chatsessionservice2
-        image: chatsessionservice:latest
-        restart: on-failure
-        hostname: chatsessionservice2
-        build:
-            context: .
-            dockerfile: ChatSessionService/Dockerfile
-        networks:
-            - common_network
