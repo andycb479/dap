@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Consul;
+﻿using Consul;
 using Microsoft.Extensions.Configuration;
 using Services.Core.ServiceDiscovery;
 
@@ -25,9 +19,9 @@ namespace ChatSessionService.DAL.Service
                var services = _consulClient.Agent.Services().Result.Response;
 
                return (from service in services
-                    let isRequiredService = service.Value.Service == serviceName
-                    where isRequiredService
-                    select new Uri($"{service.Value.Address}:{service.Value.Port}")).ToList();
+                       let isRequiredService = service.Value.Service == serviceName
+                       where isRequiredService
+                       select new Uri($"{service.Value.Address}:{service.Value.Port}")).ToList();
           }
      }
 }
