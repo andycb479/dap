@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ChatSessionService.BL.Interface\ChatSessionService.BL.Interface.csproj" />
     <ProjectReference Include="..\ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj" />
+    <ProjectReference Include="..\Services.Core\Services.Core.csproj" />
   </ItemGroup>
 
 </Project>

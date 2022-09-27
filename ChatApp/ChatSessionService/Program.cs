@@ -17,6 +17,7 @@ builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MapperIndex)));
 
 builder.Services.ConfigureDataLayer(builder.Configuration);
 builder.Services.ConfigureBusinessLayer(builder.Configuration);
+builder.Services.ConfigureRedisCache(builder.Configuration);
 
 var app = builder.Build();
 
