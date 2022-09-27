@@ -14,12 +14,15 @@ import static messages.MessagesGrpc.newBlockingStub;
 public class AvailableService {
   private final String port;
 
+  private final String address;
+
   private final MessagesGrpc.MessagesBlockingStub stub;
 
-  public AvailableService(String port) {
+  public AvailableService(String port, String address) {
+    this.address = address;
     this.port = port;
     ManagedChannel managedChannel =
-        ManagedChannelBuilder.forTarget("127.0.0.1:".concat(port)).usePlaintext().build();
+        ManagedChannelBuilder.forTarget(address + ":" + port).usePlaintext().build();
     stub = newBlockingStub(managedChannel);
   }
 
@@ -35,5 +38,9 @@ public class AvailableService {
 
   public String getPort() {
     return port;
+  }
+
+  public String getAddress() {
+    return address;
   }
 }
