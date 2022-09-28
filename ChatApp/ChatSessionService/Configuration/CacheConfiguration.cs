@@ -10,7 +10,8 @@ public static class CacheConfiguration
 
           services.AddStackExchangeRedisCache(options =>
           {
-               // options.Configuration = configuration.GetConnectionString("RedisConnectionString");
+               //options.Configuration = configuration.GetValue<string>("ServiceConfig:Redis")
+               //options.InstanceName = configuration.GetValue<string>("ServiceConfig:RedisInstanceName")
                options.Configuration = "localhost";
                options.InstanceName = "Cache";
           });

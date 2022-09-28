@@ -55,6 +55,13 @@ namespace ChatSessionService.Services
           }
 
           public override async Task GetChatMessages(ChatRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context){
+
+               // _logger.Log(LogLevel.Information, "Get messages called");
+               if (request.ChatUserId <= 0 || request.RequestUserId <= 0)
+               {
+                    throw new Exception("Validation");
+               }
+
                var messages =  await _messagesService.GetChatMessages(request.RequestUserId, request.ChatUserId);
                var mappedMessages = MapProtoMessageToAppMessage(messages);
 
