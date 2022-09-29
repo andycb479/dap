@@ -7,8 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import messages.Message;
 import messages.MessagesGrpc;
 
-import java.util.Iterator;
+import java.util.LinkedList;
 
+import static messages.MessagesGrpc.newBlockingStub;
 import static messages.MessagesGrpc.newStub;
 
 @Slf4j
@@ -17,42 +18,40 @@ public class AvailableService {
 
   private final String address;
 
-  private final MessagesGrpc.MessagesStub stub;
+  private final MessagesGrpc.MessagesStub stream_stub;
+
+  private final MessagesGrpc.MessagesBlockingStub stub;
+
+  private static final LinkedList<Message> messages = new LinkedList<>();
 
   public AvailableService(String port, String address) {
     this.address = address;
     this.port = port;
     ManagedChannel managedChannel =
         ManagedChannelBuilder.forTarget(address + ":" + port).usePlaintext().build();
-    stub = newStub(managedChannel);
+    stub = newBlockingStub(managedChannel);
+    stream_stub = newStub(managedChannel).withWaitForReady();
   }
 
   public messages.GenericReply sendMessageRequest(messages.SendMessageRequest messageRequest) {
-//    messages.GenericReply reply = stub.sendMessage(messageRequest);
-//    log.info(reply.getResponse());
-//    return reply;
-    return null;
+    messages.GenericReply reply = stub.sendMessage(messageRequest);
+    log.info(reply.getResponse());
+    return reply;
   }
 
-  public Iterator<Message> sendChatRequest(messages.ChatRequest chatRequest) {
-    Iterator<Message> messageIterator = null;
+  public LinkedList<Message> sendChatRequest(messages.ChatRequest chatRequest) {
+    messages.clear();
 
-    stub.getChatMessages(chatRequest, new OutputStreamObserver());
+    stream_stub.getChatMessages(chatRequest, new OutputStreamObserver());
 
-//    try {
-//
-//
-//      stub.cha
-//
-//      for (int i = 1; messageIterator.hasNext(); i++) {
-//        Message message = messageIterator.next();
-//        log.info(message.getMessageContent());
-//      }
-//    } catch (StatusRuntimeException e) {
-//      log.error(e.getMessage());
-//    }
+    //TODO improve this
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
 
-    return messageIterator;
+    return messages;
   }
 
   public String getPort() {
@@ -63,22 +62,22 @@ public class AvailableService {
     return address;
   }
 
-  private static class OutputStreamObserver implements StreamObserver<Message>{
+  private static class OutputStreamObserver implements StreamObserver<Message> {
 
     @Override
     public void onNext(Message value) {
-      System.out.println("Received" + value.getMessageContent());
+      messages.add(value);
+      log.info("New message: " + value.getMessageContent());
     }
 
     @Override
     public void onError(Throwable t) {
-      System.out.println("Error");
+      log.error(t.getMessage());
     }
 
     @Override
     public void onCompleted() {
-      System.out.println("Gata");
+      log.info("Stream completed");
     }
   }
-
 }

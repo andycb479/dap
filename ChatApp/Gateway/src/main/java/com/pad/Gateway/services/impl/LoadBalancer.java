@@ -8,7 +8,7 @@ import messages.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +27,7 @@ public class LoadBalancer {
     return availableService.sendMessageRequest(messageRequest);
   }
 
-  public Iterator<Message> distributeChatRequest(ChatRequest chatRequest) {
+  public LinkedList<Message> distributeChatRequest(ChatRequest chatRequest) {
     List<AvailableService> availableServices = availableServicesLookup.getAvailableServices();
 
     AvailableService availableService =
