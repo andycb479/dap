@@ -4,7 +4,7 @@ services:
              - "8500:8500"
     redis:
         ports:
-             - "8500:8500"
+             - "6379:6379"
 
     chatsessionservice1:
         environment:
@@ -18,19 +18,7 @@ services:
             - 9100:80
         depends_on:
             - consul
-             
-    messagedistributionservice:
-        environment:
-          - ASPNETCORE_ENVIRONMENT=Development
-          - ServiceConfig__Id=MessageDistributionService-9200
-          - ServiceConfig__Name=MessageDistributionService
-          - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__Address=messagedistributionservice
-          - ServiceConfig__Port=80
-        ports:
-            - 9200:80
-        depends_on:
-            - consul
+
 networks:
     common_network:
         driver: bridge
