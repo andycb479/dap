@@ -11,7 +11,7 @@ namespace ChatSessionService.Services
           private readonly IMessageEntityService _messagesService;
           private readonly ILogger _logger;
 
-          public MessagesService(IMessageEntityService messagesService, ILogger<Message> logger)
+          public MessagesService(IMessageEntityService messagesService, ILogger<MessagesService> logger)
           {
                _messagesService = messagesService;
                _logger = logger;
