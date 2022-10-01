@@ -5,11 +5,9 @@ using Services.Core.ServiceDiscovery;
 using Services.Infrastructure.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-
-// Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
 
@@ -21,7 +19,6 @@ builder.Services.ConfigureRedisCache(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseRouting();
 
 app.UseEndpoints(endpoints =>

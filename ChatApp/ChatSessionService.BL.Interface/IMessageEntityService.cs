@@ -2,9 +2,9 @@
 
 namespace ChatSessionService.BL.Interface
 {
-     public interface IMessagesService
+     public interface IMessageEntityService
      {
-          Task InsertMessage(MessageEntity message);
+          Task Insert(MessageEntity message);
           Task<IEnumerable<MessageEntity>> GetChatMessages(int requestUserId, int chatUserId);
           Task ChangeMessagesForChatToSeen(int requestUserId, int chatUserId);
      }

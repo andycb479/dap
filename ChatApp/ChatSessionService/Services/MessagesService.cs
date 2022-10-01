@@ -8,11 +8,13 @@ namespace ChatSessionService.Services
 {
      public class MessagesService : Messages.MessagesBase
      {
-          private readonly IMessagesService _messagesService;
+          private readonly IMessageEntityService _messagesService;
+          private readonly ILogger _logger;
 
-          public MessagesService(IMessagesService messagesService)
+          public MessagesService(IMessageEntityService messagesService, ILogger<Message> logger)
           {
                _messagesService = messagesService;
+               _logger = logger;
           }
 
           public override async Task<GenericReply> ChangeMessagesForChatToSeen(ChatRequest request, ServerCallContext context)
@@ -34,35 +36,50 @@ namespace ChatSessionService.Services
                          MessageStatus = MessageStatus.Sent
                     };
 
-                    await _messagesService.InsertMessage(messageEntity);
+                    await _messagesService.Insert(messageEntity);
+
+                    _logger.LogInformation("A message was sent from {FromUserId} to {ToUserId}", request.FromUserId,
+                         request.ToUserId);
 
                     return await Task.FromResult(new GenericReply { Response = "Message sent." });
                }
                catch (ValidationException e)
                {
+                    _logger.LogError(
+                         "A validation error occurred when sending a message from {FromUserId} to {ToUserId}",
+                         request.FromUserId, request.ToUserId);
+
                     return await Task.FromResult(new GenericReply { Response = e.Message });
                }
                catch (Exception e)
                {
                     return await Task.FromResult(new GenericReply { Response = "Message sent failed." });
                }
-
           }
 
-          public override async Task GetChatMessages(ChatRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context){
-
-               // _logger.Log(LogLevel.Information, "Get messages called");
-               if (request.ChatUserId <= 0 || request.RequestUserId <= 0)
+          public override async Task GetChatMessages(ChatRequest request, IServerStreamWriter<Message> responseStream, ServerCallContext context)
+          {
+               try
                {
-                    throw new Exception("Validation");
+                    var messages = await _messagesService.GetChatMessages(request.RequestUserId, request.ChatUserId);
+                    var mappedMessages = MapProtoMessageToAppMessage(messages);
+
+                    foreach (var message in mappedMessages)
+                    {
+                         await responseStream.WriteAsync(message);
+                    }
+
+                    _logger.LogInformation("Chat for users {x} and {y} send.", request.RequestUserId, request.ChatUserId);
                }
-
-               var messages =  await _messagesService.GetChatMessages(request.RequestUserId, request.ChatUserId);
-               var mappedMessages = MapProtoMessageToAppMessage(messages);
-
-               foreach (var message in mappedMessages)
+               catch (ValidationException e)
                {
-                    await responseStream.WriteAsync(message);
+                    _logger.LogError(
+                         "A validation error occurred when receiving chat for {RequestUserId} and {ChatUserId}. Message: {Message}",
+                         request.RequestUserId, request.ChatUserId, e.Message);
+               }
+               catch (Exception e)
+               {
+                   _logger.LogError(e.Message);
                }
           }
 
