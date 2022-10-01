@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Inter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Infrastructure", "ChatSessionService.Infrastructure\Services.Infrastructure.csproj", "{B29F03B0-42D6-4535-B47C-27E5FC8772EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageDistributionService", "MessageDistributionService\MessageDistributionService.csproj", "{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{B29F03B0-42D6-4535-B47C-27E5FC8772EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B29F03B0-42D6-4535-B47C-27E5FC8772EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B29F03B0-42D6-4535-B47C-27E5FC8772EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24D97529-3C0D-4AC5-9B78-8B08E1BAA551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

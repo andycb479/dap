@@ -1,5 +1,4 @@
 ﻿using ChatSessionService.BL.Interface;
-using ChatSessionService.ExternalServices.Interface;
 using Grpc.Core;
 using Services.Infrastructure;
 using Services.Infrastructure.Enums;
@@ -10,12 +9,10 @@ namespace ChatSessionService.Services
      public class MessagesService : Messages.MessagesBase
      {
           private readonly IMessagesService _messagesService;
-          private readonly IDistributionService _distributionService;
 
-          public MessagesService(IMessagesService messagesService, IDistributionService distributionService)
+          public MessagesService(IMessagesService messagesService)
           {
                _messagesService = messagesService;
-               _distributionService = distributionService;
           }
 
           public override async Task<GenericReply> ChangeMessagesForChatToSeen(ChatRequest request, ServerCallContext context)
@@ -38,8 +35,6 @@ namespace ChatSessionService.Services
                     };
 
                     await _messagesService.InsertMessage(messageEntity);
-
-                    _distributionService.RedirectMessage(messageEntity);
 
                     return await Task.FromResult(new GenericReply { Response = "Message sent." });
                }
