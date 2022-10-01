@@ -1,5 +1,6 @@
 using System.Reflection;
 using ChatSessionService.Configuration;
+using ChatSessionService.Interceptors;
 using ChatSessionService.Services;
 using Services.Core.ServiceDiscovery;
 using Services.Infrastructure.Mapper;
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options=>options.Interceptors.Add<ConcurrentTaskLimitInterceptor>());
 builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
 
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MapperIndex)));
@@ -16,6 +17,8 @@ builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MapperIndex)));
 builder.Services.ConfigureDataLayer(builder.Configuration);
 builder.Services.ConfigureBusinessLayer(builder.Configuration);
 builder.Services.ConfigureRedisCache(builder.Configuration);
+
+builder.Services.AddSingleton<ConcurrentTaskLimitInterceptor>();
 
 var app = builder.Build();
 

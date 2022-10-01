@@ -76,6 +76,7 @@ namespace ChatSessionService.Services
                     _logger.LogError(
                          "A validation error occurred when receiving chat for {RequestUserId} and {ChatUserId}. Message: {Message}",
                          request.RequestUserId, request.ChatUserId, e.Message);
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid chat arguments."));
                }
                catch (Exception e)
                {
