@@ -1,9 +1,11 @@
 package com.pad.Gateway.controller;
 
 import com.pad.Gateway.dto.ChatDto;
+import com.pad.Gateway.dto.MessageDto;
 import com.pad.Gateway.dto.SendMessageDto;
 import com.pad.Gateway.services.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class MessageController {
     return messagesService.sendMessage(sendMessageDto).getResponse();
   }
 
-  @GetMapping
-  public List<messages.Message> getChat(@RequestBody ChatDto chatDto) {
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<MessageDto> getChat(@RequestBody ChatDto chatDto) {
     return messagesService.getChat(chatDto);
   }
 

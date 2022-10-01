@@ -2,13 +2,15 @@ package com.pad.Gateway.entity;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import messages.Message;
 import messages.MessagesGrpc;
 
-import java.util.Iterator;
+import java.util.LinkedList;
 
 import static messages.MessagesGrpc.newBlockingStub;
+import static messages.MessagesGrpc.newStub;
 
 @Slf4j
 public class AvailableService {
@@ -16,7 +18,11 @@ public class AvailableService {
 
   private final String address;
 
+  private final MessagesGrpc.MessagesStub stream_stub;
+
   private final MessagesGrpc.MessagesBlockingStub stub;
+
+  private static final LinkedList<Message> messages = new LinkedList<>();
 
   public AvailableService(String port, String address) {
     this.address = address;
@@ -24,6 +30,7 @@ public class AvailableService {
     ManagedChannel managedChannel =
         ManagedChannelBuilder.forTarget(address + ":" + port).usePlaintext().build();
     stub = newBlockingStub(managedChannel);
+    stream_stub = newStub(managedChannel).withWaitForReady();
   }
 
   public messages.GenericReply sendMessageRequest(messages.SendMessageRequest messageRequest) {
@@ -32,8 +39,19 @@ public class AvailableService {
     return reply;
   }
 
-  public Iterator<Message> sendChatRequest(messages.ChatRequest chatRequest) {
-    return stub.getChatMessages(chatRequest);
+  public LinkedList<Message> sendChatRequest(messages.ChatRequest chatRequest) {
+    messages.clear();
+
+    stream_stub.getChatMessages(chatRequest, new OutputStreamObserver());
+
+    //TODO improve this
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+
+    return messages;
   }
 
   public String getPort() {
@@ -42,5 +60,24 @@ public class AvailableService {
 
   public String getAddress() {
     return address;
+  }
+
+  private static class OutputStreamObserver implements StreamObserver<Message> {
+
+    @Override
+    public void onNext(Message value) {
+      messages.add(value);
+      log.info("New message: " + value.getMessageContent());
+    }
+
+    @Override
+    public void onError(Throwable t) {
+      log.error(t.getMessage());
+    }
+
+    @Override
+    public void onCompleted() {
+      log.info("Stream completed");
+    }
   }
 }
