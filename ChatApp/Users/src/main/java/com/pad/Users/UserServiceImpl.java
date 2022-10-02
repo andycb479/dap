@@ -56,6 +56,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto updateUser(UserDto userDto) {
+        User existingUser = userRepository.findById(userDto.getId()).get();
+        existingUser.setFirstName(userDto.getFirstName());
+        existingUser.setLastName(userDto.getLastName());
+        existingUser.setStatus(userDto.getStatus());
+
+        User updatedUser = userRepository.save(existingUser);
+        UserDto userToReturn = new UserDto();
+
+        BeanUtils.copyProperties(updatedUser, userToReturn);
+
+        return userToReturn;
+    }
+
+    @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

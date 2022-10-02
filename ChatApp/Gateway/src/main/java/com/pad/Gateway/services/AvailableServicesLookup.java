@@ -21,6 +21,8 @@ import java.util.Objects;
 public class AvailableServicesLookup {
   private static int refresh_rate;
 
+  private static boolean is_dev_env;
+
   private final List<AvailableService> availableServices = new LinkedList<>();
 
   private List<ServiceHealth> lastScannedNodes = new LinkedList<>();
@@ -32,6 +34,7 @@ public class AvailableServicesLookup {
   @Autowired
   public AvailableServicesLookup(Environment env) {
     refresh_rate = Integer.parseInt(Objects.requireNonNull(env.getProperty("refresh.rate")));
+    is_dev_env = Objects.requireNonNull(env.getProperty("dev.env")).isEmpty();
     client = Consul.builder().build();
     healthClient = client.healthClient();
   }
@@ -51,6 +54,8 @@ public class AvailableServicesLookup {
                 healthClient.getHealthyServiceInstances("ChatSessionService").getResponse();
 
             if (!new HashSet<>(lastScannedNodes).containsAll(nodes)) {
+              log.info("Scanning for new services...");
+
               lastScannedNodes = nodes;
               availableServices.clear();
               lastScannedNodes.forEach(
@@ -68,14 +73,15 @@ public class AvailableServicesLookup {
             }
           }
         };
+
     // =======================
 
-//    Thread thread = new Thread(runnable);
-
-    //        thread.start();
-
-    // for dev env
-    availableServices.add(new AvailableService("9100", "127.0.0.1"));
+    if (is_dev_env) {
+      availableServices.add(new AvailableService("9100", "127.0.0.1"));
+    } else {
+      Thread thread = new Thread(runnable);
+      thread.start();
+    }
   }
 
   public List<AvailableService> getAvailableServices() {
