@@ -5,8 +5,14 @@ import com.pad.Users.dto.UserDto;
 import io.grpc.stub.StreamObserver;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import users.User;
+import users.UsersRequest;
 
-public class UsersGrpcService extends users.UsersGrpc.UsersImplBase {
+import java.util.List;
+
+@Service
+public class UsersGrpcService extends users.UsersGrpc.UsersImplBase implements GrpcService {
 
     @Autowired
     UserService userService;
@@ -43,6 +49,23 @@ public class UsersGrpcService extends users.UsersGrpc.UsersImplBase {
     }
 
     @Override
+    public void getUsers(UsersRequest request, StreamObserver<User> responseObserver) {
+        List<UserDto> users = userService.getUsers();
+
+        for (UserDto userDto : users) {
+            users.User.Builder builder = User.newBuilder();
+            builder.setUserId(userDto.getId().intValue());
+            builder.setFirstName(userDto.getFirstName());
+            builder.setLastName(userDto.getLastName());
+            builder.setStatus(userDto.getStatus());
+
+            responseObserver.onNext(builder.build());
+        }
+
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getUserStatus(users.UserIdRequest request, StreamObserver<users.UserStatus> responseObserver) {
         UserDto foundUser = userService.getUser((long) request.getUserId());
 
@@ -58,9 +81,9 @@ public class UsersGrpcService extends users.UsersGrpc.UsersImplBase {
     public void changeUserStatus(users.UserStatus request, StreamObserver<users.User> responseObserver) {
         UserDto userDto = new UserDto();
         userDto.setStatus(request.getStatus());
-        userDto.setId( (long) request.getUserId());
+        userDto.setId((long) request.getUserId());
 
-        UserDto updatedUser = userService.updateUser(userDto);
+        UserDto updatedUser = userService.updateUserStatus(userDto);
 
         users.User.Builder builder = users.User.newBuilder();
         builder.setUserId(updatedUser.getId().intValue());
@@ -76,9 +99,9 @@ public class UsersGrpcService extends users.UsersGrpc.UsersImplBase {
     public void updateUser(users.User request, StreamObserver<users.User> responseObserver) {
         UserDto userDto = new UserDto();
         userDto.setStatus(request.getStatus());
-        userDto.setId( (long) request.getUserId());
+        userDto.setId((long) request.getUserId());
         userDto.setFirstName(request.getFirstName());
-        userDto.setFirstName(request.getLastName());
+        userDto.setLastName(request.getLastName());
 
         UserDto updatedUser = userService.updateUser(userDto);
 
@@ -94,7 +117,7 @@ public class UsersGrpcService extends users.UsersGrpc.UsersImplBase {
 
     @Override
     public void deleteUser(users.UserIdRequest request, StreamObserver<users.GenericReply> responseObserver) {
-        userService.deleteUser( (long) request.getUserId());
+        userService.deleteUser((long) request.getUserId());
 
         users.GenericReply.Builder builder = users.GenericReply.newBuilder();
         builder.setResponse("User deleted!");

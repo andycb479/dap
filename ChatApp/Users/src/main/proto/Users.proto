@@ -5,6 +5,7 @@ package users;
 service Users {
   rpc CreateUser(User) returns (User);
   rpc GetUser(UserIdRequest) returns (User);
+  rpc GetUsers(UsersRequest) returns (stream User);
   rpc GetUserStatus(UserIdRequest) returns (UserStatus);
   rpc ChangeUserStatus(UserStatus) returns (User);
   rpc UpdateUser(User) returns (User);
@@ -25,6 +26,10 @@ message UserIdRequest{
 message UserStatus{
   int32 userId = 1;
   string status = 2;
+}
+
+message UsersRequest{
+
 }
 
 message GenericReply {
