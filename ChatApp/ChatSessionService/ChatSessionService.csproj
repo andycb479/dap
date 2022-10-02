@@ -9,13 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\distribution.proto" />
     <None Remove="Protos\healthCheck.proto" />
     <None Remove="Protos\messages.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\distribution.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\messages.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\healthCheck.proto" GrpcServices="Server" />
   </ItemGroup>

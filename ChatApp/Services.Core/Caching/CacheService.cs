@@ -1,8 +1,9 @@
-﻿using System.Text;
-using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using Services.Core.Caching.Interface;
+using Services.Infrastructure.Attributes;
 using Services.Infrastructure.Enums;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Services.Core.Caching
 {
@@ -16,7 +17,7 @@ namespace Services.Core.Caching
           {
                _cacheStore = cacheStore;
 
-               _serializerSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+               _serializerSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore};
           }
 
           public async Task<TCachedType?> GetFromCacheAsync<TCachedType>(string key)
@@ -42,12 +43,12 @@ namespace Services.Core.Caching
                string cacheString = FormatObjectForCaching(objectToCache, key);
 
                var options = new DistributedCacheEntryOptions()
-                    { AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddMinutes((int)cacheExpiryType)) };
+               { AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddMinutes((int)cacheExpiryType)) };
 
                await _cacheStore.SetStringAsync(key, cacheString, options);
           }
 
-          public string CreateCacheKey(string serviceName, Type type, int id, string customSuffix)
+          public string CreateCacheKey(string serviceName, Type type, string id, string customSuffix)
           {
                StringBuilder sb = new StringBuilder(serviceName.ToLower());
 
@@ -55,8 +56,7 @@ namespace Services.Core.Caching
                entityType = entityType.Contains("[[") ? $"{entityType}]]" : entityType;
                sb.Append($"-{entityType}");
 
-               var idVal = id > 0 ? $"-Id-{id}" : "-Array";
-               sb.Append(idVal);
+               sb.Append($"-Id-{id}");
 
                if (!string.IsNullOrEmpty(customSuffix))
                {
@@ -64,6 +64,11 @@ namespace Services.Core.Caching
                }
 
                return sb.ToString();
+          }
+
+          public async Task RemoveAsync(string key)
+          {
+               await _cacheStore.RemoveAsync(key);
           }
 
           private string FormatObjectForCaching<TCachedType>(TCachedType objectToCache, string key)
