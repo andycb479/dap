@@ -1,4 +1,4 @@
-package com.pad.Gateway.dto;
+package com.pad.Gateway.dto.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

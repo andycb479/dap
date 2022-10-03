@@ -1,8 +1,8 @@
 package com.pad.Gateway.services;
 
-import com.pad.Gateway.dto.ChatDto;
-import com.pad.Gateway.dto.MessageDto;
-import com.pad.Gateway.dto.SendMessageDto;
+import com.pad.Gateway.dto.message.ChatDto;
+import com.pad.Gateway.dto.message.MessageDto;
+import com.pad.Gateway.dto.message.SendMessageDto;
 import messages.GenericReply;
 
 import java.util.LinkedList;

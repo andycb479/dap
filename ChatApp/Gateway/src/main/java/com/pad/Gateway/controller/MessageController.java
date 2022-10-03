@@ -1,8 +1,8 @@
 package com.pad.Gateway.controller;
 
-import com.pad.Gateway.dto.ChatDto;
-import com.pad.Gateway.dto.MessageDto;
-import com.pad.Gateway.dto.SendMessageDto;
+import com.pad.Gateway.dto.message.ChatDto;
+import com.pad.Gateway.dto.message.MessageDto;
+import com.pad.Gateway.dto.message.SendMessageDto;
 import com.pad.Gateway.services.MessagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

@@ -3,7 +3,8 @@ package com.pad.Gateway.services;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.model.health.ServiceHealth;
-import com.pad.Gateway.entity.AvailableService;
+import com.pad.Gateway.entity.AvailableChatService;
+import com.pad.Gateway.entity.AvailableUsersService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -23,9 +24,11 @@ public class AvailableServicesLookup {
 
   private static boolean is_dev_env;
 
-  private final List<AvailableService> availableServices = new LinkedList<>();
+  private final List<AvailableChatService> availableChatServices = new LinkedList<>();
+  private final List<AvailableUsersService> availableUsersServices = new LinkedList<>();
 
-  private List<ServiceHealth> lastScannedNodes = new LinkedList<>();
+  private List<ServiceHealth> lastScannedChatNodes = new LinkedList<>();
+  private List<ServiceHealth> lastScannedUsersNodes = new LinkedList<>();
 
   private Consul client;
 
@@ -34,7 +37,7 @@ public class AvailableServicesLookup {
   @Autowired
   public AvailableServicesLookup(Environment env) {
     refresh_rate = Integer.parseInt(Objects.requireNonNull(env.getProperty("refresh.rate")));
-    is_dev_env = Objects.requireNonNull(env.getProperty("dev.env")).isEmpty();
+    is_dev_env = Boolean.parseBoolean(Objects.requireNonNull(env.getProperty("dev.env")));
     client = Consul.builder().build();
     healthClient = client.healthClient();
   }
@@ -50,22 +53,39 @@ public class AvailableServicesLookup {
     Runnable runnable =
         () -> {
           while (true) {
-            List<ServiceHealth> nodes =
+            List<ServiceHealth> chatNodes =
                 healthClient.getHealthyServiceInstances("ChatSessionService").getResponse();
+            List<ServiceHealth> usersNodes =
+                healthClient.getHealthyServiceInstances("UsersService").getResponse();
 
-            if (!new HashSet<>(lastScannedNodes).containsAll(nodes)) {
-              log.info("Scanning for new services...");
+            if (!new HashSet<>(lastScannedChatNodes).containsAll(chatNodes)) {
+              log.info("Scanning for new ChatSessionService instances...");
 
-              lastScannedNodes = nodes;
-              availableServices.clear();
-              lastScannedNodes.forEach(
+              lastScannedChatNodes = chatNodes;
+              availableChatServices.clear();
+              lastScannedChatNodes.forEach(
                   node -> {
-                    availableServices.add(
-                        new AvailableService(
+                    availableChatServices.add(
+                        new AvailableChatService(
                             String.valueOf(node.getService().getPort()),
                             node.getService().getAddress()));
                   });
             }
+
+            if (!new HashSet<>(lastScannedUsersNodes).containsAll(chatNodes)) {
+              log.info("Scanning for new UsersService instances...");
+
+              lastScannedUsersNodes = usersNodes;
+              availableUsersServices.clear();
+              lastScannedUsersNodes.forEach(
+                  node -> {
+                    availableUsersServices.add(
+                        new AvailableUsersService(
+                            String.valueOf(node.getService().getPort()),
+                            node.getService().getAddress()));
+                  });
+            }
+
             try {
               Thread.sleep(refresh_rate);
             } catch (InterruptedException e) {
@@ -77,14 +97,19 @@ public class AvailableServicesLookup {
     // =======================
 
     if (is_dev_env) {
-      availableServices.add(new AvailableService("9100", "127.0.0.1"));
+      availableChatServices.add(new AvailableChatService("9100", "127.0.0.1"));
+      availableUsersServices.add(new AvailableUsersService("9300", "127.0.0.1"));
     } else {
       Thread thread = new Thread(runnable);
       thread.start();
     }
   }
 
-  public List<AvailableService> getAvailableServices() {
-    return availableServices;
+  public List<AvailableChatService> getAvailableChatServices() {
+    return availableChatServices;
+  }
+
+  public List<AvailableUsersService> getAvailableUsersServices() {
+    return availableUsersServices;
   }
 }

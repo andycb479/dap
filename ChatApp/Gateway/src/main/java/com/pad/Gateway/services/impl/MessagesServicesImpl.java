@@ -1,9 +1,10 @@
 package com.pad.Gateway.services.impl;
 
-import com.pad.Gateway.dto.ChatDto;
-import com.pad.Gateway.dto.MessageDto;
-import com.pad.Gateway.dto.SendMessageDto;
+import com.pad.Gateway.dto.message.ChatDto;
+import com.pad.Gateway.dto.message.MessageDto;
+import com.pad.Gateway.dto.message.SendMessageDto;
 import com.pad.Gateway.services.MessagesService;
+import com.pad.Gateway.services.impl.load.balance.MessagesRequestsLoadBalancer;
 import messages.GenericReply;
 import messages.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.LinkedList;
 @Service
 public class MessagesServicesImpl implements MessagesService {
 
-  @Autowired LoadBalancer loadBalancer;
+  @Autowired MessagesRequestsLoadBalancer loadBalancer;
 
   @Override
   public GenericReply sendMessage(SendMessageDto messageDto) {
@@ -39,15 +40,14 @@ public class MessagesServicesImpl implements MessagesService {
     LinkedList<Message> chatList = loadBalancer.distributeChatRequest(request);
     LinkedList<MessageDto> messageDtos = new LinkedList<>();
     chatList.forEach(
-        chat -> {
-          messageDtos.add(
-              new MessageDto(
-                  chat.getMessageStatus(),
-                  chat.getFromUserId(),
-                  chat.getToUserId(),
-                  chat.getDate(),
-                  chat.getMessageContent()));
-        });
+        chat ->
+            messageDtos.add(
+                new MessageDto(
+                    chat.getMessageStatus(),
+                    chat.getFromUserId(),
+                    chat.getToUserId(),
+                    chat.getDate(),
+                    chat.getMessageContent())));
 
     return messageDtos;
   }

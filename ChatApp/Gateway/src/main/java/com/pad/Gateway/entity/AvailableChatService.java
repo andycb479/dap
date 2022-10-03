@@ -13,7 +13,7 @@ import static messages.MessagesGrpc.newBlockingStub;
 import static messages.MessagesGrpc.newStub;
 
 @Slf4j
-public class AvailableService {
+public class AvailableChatService {
   private final String port;
 
   private final String address;
@@ -24,7 +24,7 @@ public class AvailableService {
 
   private static final LinkedList<Message> messages = new LinkedList<>();
 
-  public AvailableService(String port, String address) {
+  public AvailableChatService(String port, String address) {
     this.address = address;
     this.port = port;
     ManagedChannel managedChannel =
@@ -52,14 +52,6 @@ public class AvailableService {
     }
 
     return messages;
-  }
-
-  public String getPort() {
-    return port;
-  }
-
-  public String getAddress() {
-    return address;
   }
 
   private static class OutputStreamObserver implements StreamObserver<Message> {
