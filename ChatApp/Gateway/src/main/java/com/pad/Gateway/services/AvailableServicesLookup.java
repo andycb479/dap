@@ -97,6 +97,8 @@ public class AvailableServicesLookup {
     // =======================
 
     if (is_dev_env) {
+      log.info("Dev env enabled");
+
       availableChatServices.add(new AvailableChatService("9100", "127.0.0.1"));
       availableUsersServices.add(new AvailableUsersService("9300", "127.0.0.1"));
     } else {

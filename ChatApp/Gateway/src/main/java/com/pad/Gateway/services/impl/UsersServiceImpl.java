@@ -43,6 +43,7 @@ public class UsersServiceImpl implements UserService {
         user -> {
           UserDto userDto = new UserDto();
           BeanUtils.copyProperties(user, userDto);
+          usersToReturn.add(userDto);
         });
 
     return usersToReturn;
@@ -52,7 +53,6 @@ public class UsersServiceImpl implements UserService {
   public UserDto createUser(UserDto userDto) {
     User request =
         User.newBuilder()
-            .setUserId(Math.toIntExact(userDto.getId()))
             .setFirstName(userDto.getFirstName())
             .setLastName(userDto.getLastName())
             .setStatus(userDto.getStatus())
@@ -76,7 +76,7 @@ public class UsersServiceImpl implements UserService {
   public UserDto updateUser(UserDto userDto) {
     User request =
         User.newBuilder()
-            .setUserId(Math.toIntExact(userDto.getId()))
+            .setUserId(userDto.getUserId())
             .setFirstName(userDto.getFirstName())
             .setLastName(userDto.getLastName())
             .setStatus(userDto.getStatus())
@@ -94,7 +94,7 @@ public class UsersServiceImpl implements UserService {
   public UserDto updateUserStatus(UpdateStatusDto userDto) {
     UserStatus request =
         UserStatus.newBuilder()
-            .setUserId(Math.toIntExact(userDto.getId()))
+            .setUserId(userDto.getUserId())
             .setStatus(userDto.getStatus())
             .build();
 

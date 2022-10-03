@@ -4,6 +4,7 @@ import com.pad.Gateway.dto.user.UpdateStatusDto;
 import com.pad.Gateway.dto.user.UserDto;
 import com.pad.Gateway.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +25,12 @@ public class UserController {
     return userService.getUser(Integer.parseInt(userId));
   }
 
-  @PutMapping
+  @PutMapping("/status")
   public UserDto updateUserStatus(@RequestBody UpdateStatusDto userDto) {
     return userService.updateUserStatus(userDto);
   }
 
-  @GetMapping
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public List<UserDto> getUsers() {
     return userService.getUsers();
   }

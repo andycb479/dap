@@ -69,6 +69,7 @@ public class AvailableUsersService {
 
     @Override
     public void onNext(User value) {
+      log.info("New user with id - " + value.getUserId());
       users.add(value);
     }
 
