@@ -26,6 +26,7 @@ public class AvailableUsersService {
     this.port = port;
     ManagedChannel managedChannel =
         ManagedChannelBuilder.forTarget(address + ":" + port).usePlaintext().build();
+    log.info("Adding new available users service with address -> " + address + ":" + port);
     stub = UsersGrpc.newBlockingStub(managedChannel);
     stream_stub = UsersGrpc.newStub(managedChannel).withWaitForReady();
   }

@@ -1,6 +1,8 @@
 package com.pad.Users;
 
+import com.orbitz.consul.NotRegisteredException;
 import com.pad.Users.service.GrpcService;
+import com.pad.Users.service.ServiceRegistration;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -21,11 +23,12 @@ public class GrpcServerImpl implements GrpcServer{
 
     @EventListener(ApplicationReadyEvent.class)
     @Override
-    public void run() throws IOException, InterruptedException {
-        Server grpcServer = ServerBuilder.forPort(9300).addService((BindableService) grpcService).build();
+    public void run() throws IOException, InterruptedException, NotRegisteredException {
+        Server grpcServer = ServerBuilder.forPort(80).addService((BindableService) grpcService).build();
         grpcServer.start();
 
         log.info("gRPC server started!");
+        ServiceRegistration.registerService();
 
         grpcServer.awaitTermination();
     }

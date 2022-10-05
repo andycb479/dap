@@ -21,6 +21,27 @@ services:
         depends_on:
             - consul
 
+    mysql:
+        environment:
+            MYSQL_DATABASE: 'users'
+            MYSQL_ROOT_PASSWORD: 'root'
+        ports:
+            - 3306:3306
+
+    usersservice:
+        depends_on:
+            - mysql
+        ports:
+            - 9300:9300
+
+    gateway:
+        environment:
+            REFRESH.RATE: 3500
+        depends_on:
+            - consul
+        ports:
+            - 8084:8084
+
 networks:
     common_network:
         driver: bridge

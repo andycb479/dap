@@ -24,6 +24,8 @@ public class AvailableServicesLookup {
 
   private static boolean is_dev_env;
 
+  private static String consul_url;
+
   private final List<AvailableChatService> availableChatServices = new LinkedList<>();
   private final List<AvailableUsersService> availableUsersServices = new LinkedList<>();
 
@@ -38,7 +40,8 @@ public class AvailableServicesLookup {
   public AvailableServicesLookup(Environment env) {
     refresh_rate = Integer.parseInt(Objects.requireNonNull(env.getProperty("refresh.rate")));
     is_dev_env = Boolean.parseBoolean(Objects.requireNonNull(env.getProperty("dev.env")));
-    client = Consul.builder().build();
+    consul_url = env.getProperty("consul.url");
+    client = Consul.builder().withUrl(consul_url).build();
     healthClient = client.healthClient();
   }
 
@@ -72,8 +75,10 @@ public class AvailableServicesLookup {
                   });
             }
 
-            if (!new HashSet<>(lastScannedUsersNodes).containsAll(chatNodes)) {
+            if (!new HashSet<>(lastScannedUsersNodes).containsAll(usersNodes)) {
               log.info("Scanning for new UsersService instances...");
+
+              log.info("Nr of usersservices : " + usersNodes.size());
 
               lastScannedUsersNodes = usersNodes;
               availableUsersServices.clear();

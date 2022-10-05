@@ -26,3 +26,33 @@ services:
             dockerfile: ChatSessionService/Dockerfile
         networks:
             - common_network
+
+   usersservice:
+        container_name: usersservice
+        image: usersservice:latest
+        restart: on-failure
+        hostname: usersservice
+        build:
+            context: .
+            dockerfile: Users/Dockerfile
+        networks:
+            - common_network      
+
+   gateway:
+        container_name: gateway
+        image: gateway:latest
+        restart: on-failure
+        hostname: gateway
+        build:
+            context: .
+            dockerfile: Gateway/Dockerfile
+        networks:
+            - common_network
+
+   mysql:
+        container_name: mysql_server
+        image: mysql:5.7
+        restart: on-failure
+        hostname: mysql_server
+        networks:
+            - common_network

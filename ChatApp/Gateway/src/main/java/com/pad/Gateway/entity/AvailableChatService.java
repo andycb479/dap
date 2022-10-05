@@ -29,6 +29,7 @@ public class AvailableChatService {
     this.port = port;
     ManagedChannel managedChannel =
         ManagedChannelBuilder.forTarget(address + ":" + port).usePlaintext().build();
+    log.info("Adding new available chat service with address -> " + address + ":" + port);
     stub = newBlockingStub(managedChannel);
     stream_stub = newStub(managedChannel).withWaitForReady();
   }
