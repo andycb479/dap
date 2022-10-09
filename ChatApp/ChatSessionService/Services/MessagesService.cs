@@ -38,7 +38,7 @@ namespace ChatSessionService.Services
 
                     await _messagesService.Insert(messageEntity);
 
-                    _logger.LogInformation("A message was sent from {FromUserId} to {ToUserId}", request.FromUserId,
+                    _logger.LogInformation("A message was sent from UserId {FromUserId} to UserId {ToUserId}", request.FromUserId,
                          request.ToUserId);
 
                     return await Task.FromResult(new GenericReply { Response = "Message sent." });
