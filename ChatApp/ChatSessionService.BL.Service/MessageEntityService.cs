@@ -38,6 +38,8 @@ namespace ChatSessionService.BL.Service
 
                if (messages is not null) return messages;
 
+               await ChangeMessagesForChatToSeen(requestUserId, chatUserId);
+
                messages = await _messagesRepository.GetChatMessages(requestUserId, chatUserId);
                messages = messages.OrderBy(x => x.CreatedAt).ToList();
 
@@ -48,8 +50,6 @@ namespace ChatSessionService.BL.Service
 
           public async Task ChangeMessagesForChatToSeen(int requestUserId, int chatUserId)
           {
-               await RemoveChatFromCacheIfPresent(requestUserId, chatUserId);
-
                await _messagesRepository.UpdateUserChatMessagesToSeen(requestUserId, chatUserId);
           }
 

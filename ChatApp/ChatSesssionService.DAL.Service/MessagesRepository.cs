@@ -25,6 +25,7 @@ namespace ChatSessionService.DAL.Service
                var builder = Builders<MessageEntity>.Filter;
                var filter = builder.Eq(_ => _.FromUserId, chatUserId);
                filter &= builder.Eq(_ => _.ToUserId, requestUserId);
+               filter &= builder.Eq(_ => _.MessageStatus, MessageStatus.Sent);
 
                var update = Builders<MessageEntity>.Update.Set(x => x.MessageStatus, MessageStatus.Seen);
 
