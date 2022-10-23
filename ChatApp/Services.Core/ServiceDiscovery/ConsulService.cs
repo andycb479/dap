@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Services.Core.ServiceDiscovery
 {
-     public class ConsulService
+     public class ConsulService : IConsulService
      {
           private readonly ConsulClient _consulClient;
 
@@ -13,7 +13,7 @@ namespace Services.Core.ServiceDiscovery
                _consulClient = new ConsulClient(c => c.Address = serviceDiscoveryConfig.DiscoveryAddress);
           }
 
-          private async Task<Uri> GetRequestUriAsync(string serviceName)
+          public async Task<Uri> GetRequestUriAsync(string serviceName)
           {
                //Get all services registered on Consul
                var allRegisteredServices = await _consulClient.Agent.Services();

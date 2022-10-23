@@ -1,5 +1,6 @@
 ﻿using ChatSessionService.BL.Interface;
 using ChatSessionService.DAL.Interface;
+using ExternalServices.Services;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using Moq;
@@ -14,6 +15,7 @@ namespace ChatSessionService.BL.Service.Tests
      public class MessageEntityServiceTests
      {
           private readonly Mock<IMessagesRepository> _messagesRepository;
+          private readonly Mock<IUsersService> _usersService;
           private readonly Mock<ICacheService> _cacheService;
           private readonly IMessageEntityService _messageEntityService;
 
@@ -21,13 +23,14 @@ namespace ChatSessionService.BL.Service.Tests
           {
                _cacheService = new Mock<ICacheService>();
                _messagesRepository = new Mock<IMessagesRepository>();
+               _usersService = new Mock<IUsersService>();
 
                Mock<IConfiguration> configuration = new Mock<IConfiguration>();
                configuration.Setup(c => c.GetSection(It.IsAny<String>())).Returns(new Mock<IConfigurationSection>().Object);
 
                TestClassSetup();
 
-               _messageEntityService = new MessageEntityService(_messagesRepository.Object, _cacheService.Object, configuration.Object);
+               _messageEntityService = new MessageEntityService(_messagesRepository.Object, _usersService.Object, _cacheService.Object, configuration.Object);
           }
 
           private void TestClassSetup()

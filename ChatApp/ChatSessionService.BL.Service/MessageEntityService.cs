@@ -1,5 +1,6 @@
 ﻿using ChatSessionService.BL.Interface;
 using ChatSessionService.DAL.Interface;
+using ExternalServices.Services;
 using Microsoft.Extensions.Configuration;
 using Services.Core.Caching.Interface;
 using Services.Infrastructure;
@@ -11,17 +12,20 @@ namespace ChatSessionService.BL.Service
      public class MessageEntityService : IMessageEntityService
      {
           private readonly IMessagesRepository _messagesRepository;
+          private readonly IUsersService _usersService;
           private readonly ICacheService _cacheService;
 
           private readonly string _serviceName;
 
-          public MessageEntityService(IMessagesRepository messagesRepository, ICacheService cacheService, IConfiguration configuration)
+          public MessageEntityService(IMessagesRepository messagesRepository, IUsersService usersService, ICacheService cacheService, IConfiguration configuration)
           {
                _messagesRepository = messagesRepository;
+               _usersService = usersService;
                _cacheService = cacheService;
 
                _serviceName = configuration.GetValue<string>("ServiceConfig:Name") ?? "ChatSessionService";
           }
+
           public async Task Insert(MessageEntity message)
           {
                ValidateMessage(message);

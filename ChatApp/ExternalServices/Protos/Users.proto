@@ -1,0 +1,39 @@
+﻿syntax = "proto3";
+option java_multiple_files = true;
+package users;
+
+option csharp_namespace = "ExternalServices";
+
+service Users {
+  rpc CreateUser(User) returns (User);
+  rpc GetUser(UserIdRequest) returns (User);
+  rpc GetUsers(UsersRequest) returns (stream User);
+  rpc GetUserStatus(UserIdRequest) returns (UserStatus);
+  rpc ChangeUserStatus(UserStatus) returns (User);
+  rpc UpdateUser(User) returns (User);
+  rpc DeleteUser(UserIdRequest) returns (GenericReply);
+}
+
+message User{
+  int32 userId = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string status = 4;
+}
+
+message UserIdRequest{
+  int32 userId = 1;
+}
+
+message UserStatus{
+  int32 userId = 1;
+  string status = 2;
+}
+
+message UsersRequest{
+
+}
+
+message GenericReply {
+  string response = 1;
+}

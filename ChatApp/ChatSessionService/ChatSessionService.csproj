@@ -30,11 +30,8 @@
     <ProjectReference Include="..\ChatSessionService.DAL.Interface\ChatSessionService.DAL.Interface.csproj" />
     <ProjectReference Include="..\ChatSessionService.Infrastructure\Services.Infrastructure.csproj" />
     <ProjectReference Include="..\ChatSesssionService.DAL.Service\ChatSessionService.DAL.Service.csproj" />
+    <ProjectReference Include="..\ExternalServices\ExternalServices.csproj" />
     <ProjectReference Include="..\Services.Core\Services.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ExternalServices\Interface\" />
   </ItemGroup>
 
 </Project>

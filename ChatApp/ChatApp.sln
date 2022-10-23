@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Inter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Infrastructure", "ChatSessionService.Infrastructure\Services.Infrastructure.csproj", "{B29F03B0-42D6-4535-B47C-27E5FC8772EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSessionService.BL.Service.Tests", "ChatSessionService.BL.Service.Tests\ChatSessionService.BL.Service.Tests.csproj", "{99DE0C02-EE58-4B90-A193-31008CB58507}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Service.Tests", "ChatSessionService.BL.Service.Tests\ChatSessionService.BL.Service.Tests.csproj", "{99DE0C02-EE58-4B90-A193-31008CB58507}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServices", "ExternalServices\ExternalServices.csproj", "{46520518-D7F5-49A9-A0D1-B22551517DDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{99DE0C02-EE58-4B90-A193-31008CB58507}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99DE0C02-EE58-4B90-A193-31008CB58507}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99DE0C02-EE58-4B90-A193-31008CB58507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
