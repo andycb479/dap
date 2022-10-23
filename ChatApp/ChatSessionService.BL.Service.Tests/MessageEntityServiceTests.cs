@@ -5,14 +5,14 @@ using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using Moq;
 using Services.Core.Caching.Interface;
-using Services.Infrastructure;
 using Services.Infrastructure.Entity;
 using Services.Infrastructure.Enums;
+using Services.Infrastructure.Exceptions;
 using Xunit;
 
 namespace ChatSessionService.BL.Service.Tests
 {
-     public class MessageEntityServiceTests
+    public class MessageEntityServiceTests
      {
           private readonly Mock<IMessagesRepository> _messagesRepository;
           private readonly Mock<IUsersService> _usersService;
