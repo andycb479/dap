@@ -32,7 +32,7 @@ services:
         depends_on:
             - mysql
         ports:
-            - 9300:9300
+            - 9300:80
 
     gateway:
         environment:
