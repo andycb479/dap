@@ -3,9 +3,9 @@ using ChatSessionService.DAL.Interface;
 using ExternalServices.Services;
 using Microsoft.Extensions.Configuration;
 using Services.Core.Caching.Interface;
-using Services.Infrastructure;
 using Services.Infrastructure.Entity;
 using Services.Infrastructure.Enums;
+using Services.Infrastructure.Exceptions;
 
 namespace ChatSessionService.BL.Service
 {
@@ -71,7 +71,17 @@ namespace ChatSessionService.BL.Service
                if (messages is not null) await _cacheService.RemoveAsync(chatCacheKey);
           }
 
-          private void ValidateMessage(MessageEntity message)
+          private async Task ValidateMessage(MessageEntity message)
+          {
+               if (string.IsNullOrWhiteSpace(message.MessageContent))
+               {
+                    throw new ValidationException("Message content cannot be empty.");
+               }
+
+               await ValidateUsers(message);
+          }
+
+          private async Task ValidateUsers(MessageEntity message)
           {
                if (message.FromUserId <= 0)
                {
@@ -83,9 +93,16 @@ namespace ChatSessionService.BL.Service
                     throw new ValidationException("Invalid receiver.");
                }
 
-               if (string.IsNullOrWhiteSpace(message.MessageContent))
+               var fromUser = await _usersService.GetUserAsync(message.FromUserId);
+               if (fromUser is null)
                {
-                    throw new ValidationException("Message content cannot be empty.");
+                    throw new ValidationException("Sender user cannot be found!");
+               }
+
+               var toUser = await _usersService.GetUserAsync(message.ToUserId);
+               if (toUser is null)
+               {
+                    throw new ValidationException("Receiver user cannot be found!");
                }
           }
 

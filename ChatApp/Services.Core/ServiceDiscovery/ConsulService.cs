@@ -1,5 +1,6 @@
 ﻿using Consul;
 using Microsoft.Extensions.Configuration;
+using Services.Infrastructure.Exceptions;
 
 namespace Services.Core.ServiceDiscovery
 {
@@ -26,7 +27,7 @@ namespace Services.Core.ServiceDiscovery
 
                if (service == null)
                {
-                    throw new Exception($"Consul service: '{serviceName}' was not found.");
+                    throw new ServiceNotAvailableException(serviceName);
                }
 
                var uriBuilder = new UriBuilder()

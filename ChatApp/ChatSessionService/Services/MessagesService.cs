@@ -1,12 +1,12 @@
 ﻿using ChatSessionService.BL.Interface;
 using Grpc.Core;
-using Services.Infrastructure;
 using Services.Infrastructure.Enums;
+using Services.Infrastructure.Exceptions;
 using Entity = Services.Infrastructure.Entity;
 
 namespace ChatSessionService.Services
 {
-     public class MessagesService : Messages.MessagesBase
+    public class MessagesService : Messages.MessagesBase
      {
           private readonly IMessageEntityService _messagesService;
           private readonly ILogger _logger;
@@ -38,7 +38,8 @@ namespace ChatSessionService.Services
 
                     await _messagesService.Insert(messageEntity);
 
-                    _logger.LogInformation("A message was sent from UserId {FromUserId} to UserId {ToUserId}", request.FromUserId,
+                    _logger.LogInformation("A message was sent from UserId {FromUserId} to UserId {ToUserId}",
+                         request.FromUserId,
                          request.ToUserId);
 
                     return await Task.FromResult(new GenericReply { Response = "Message sent." });
@@ -46,8 +47,8 @@ namespace ChatSessionService.Services
                catch (ValidationException e)
                {
                     _logger.LogError(
-                         "A validation error occurred when sending a message from {FromUserId} to {ToUserId}",
-                         request.FromUserId, request.ToUserId);
+                         "A validation error occurred when sending a message from {FromUserId} to {ToUserId}. {validationMessage}",
+                         request.FromUserId, request.ToUserId, e.Message);
 
                     return await Task.FromResult(new GenericReply { Response = e.Message });
                }

@@ -14,7 +14,7 @@ namespace ExternalServices.Services
                _serviceName = configuration.GetValue<string>("ExternalServicesNames:UsersService") ?? "UsersService";
           }
 
-          public async Task<User> GetUser(int userId)
+          public async Task<User> GetUserAsync(int userId)
           {
                var serviceUri = await _consulService.GetRequestUriAsync(_serviceName);
 
