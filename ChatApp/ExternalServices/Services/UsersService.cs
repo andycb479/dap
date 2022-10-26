@@ -6,6 +6,7 @@ using Services.Core.Caching.Interface;
 using Services.Core.ServiceDiscovery;
 using Services.Infrastructure.Entity;
 using Services.Infrastructure.Enums;
+using Services.Infrastructure.Extensions;
 
 namespace ExternalServices.Services
 {
@@ -15,11 +16,12 @@ namespace ExternalServices.Services
           private readonly ICacheService _cacheService;
           private readonly string _externalServiceName;
           private readonly string _currentServiceName;
-
+          private readonly int _maxTimeout;
           public UsersService(IConsulService consulService, ICacheService cacheService, IConfiguration configuration)
           {
                _consulService = consulService;
                _cacheService = cacheService;
+               _maxTimeout = configuration.GetValue<int>("TaskTimeout:MaxTimeout"); ;
                _externalServiceName = configuration.GetValue<string>("ExternalServicesNames:UsersService") ?? "UsersService";
                _currentServiceName = "ChatSessionService";
           }
@@ -33,9 +35,8 @@ namespace ExternalServices.Services
                     return user;
                }
 
-               user = await GetUserFromExternalService(userId);
+               user = await (GetUserFromExternalService(userId).TimeoutAfter<User>(_maxTimeout));
                await _cacheService.SetInCacheAsync(user, cacheKey, CacheExpiryType.TwoMinutes);
-
                return user;
           }
 
@@ -46,7 +47,8 @@ namespace ExternalServices.Services
 
           private async Task<User?> GetUserFromExternalService(int userId)
           {
-               var serviceUri = await _consulService.GetRequestUriAsync(_externalServiceName);
+               // var serviceUri = await _consulService.GetRequestUriAsync(_externalServiceName);
+               var serviceUri = new UriBuilder() { Host = "localhost", Port = 9300 }.Uri;
 
                using var channel = GrpcChannel.ForAddress(serviceUri);
                var client = new Users.UsersClient(channel);
