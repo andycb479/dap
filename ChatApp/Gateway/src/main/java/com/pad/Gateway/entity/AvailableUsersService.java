@@ -84,4 +84,12 @@ public class AvailableUsersService {
       log.info("Users stream completed");
     }
   }
+
+  public String getPort() {
+    return port;
+  }
+
+  public String getAddress() {
+    return address;
+  }
 }

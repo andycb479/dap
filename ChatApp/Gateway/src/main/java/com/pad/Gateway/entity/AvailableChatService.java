@@ -73,4 +73,12 @@ public class AvailableChatService {
       log.info("Stream completed");
     }
   }
+
+  public String getPort() {
+    return port;
+  }
+
+  public String getAddress() {
+    return address;
+  }
 }
