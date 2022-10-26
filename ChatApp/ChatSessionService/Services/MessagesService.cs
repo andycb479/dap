@@ -54,6 +54,11 @@ namespace ChatSessionService.Services
                }
                catch (Exception e)
                {
+                    if (e is TimeoutException)
+                    {
+                         _logger.LogError("One of the tasks timed out!");
+                    }
+
                     return await Task.FromResult(new GenericReply { Response = "Message sent failed." });
                }
           }
