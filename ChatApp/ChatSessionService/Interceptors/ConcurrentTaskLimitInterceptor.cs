@@ -6,7 +6,7 @@ namespace ChatSessionService.Interceptors
      public class ConcurrentTaskLimitInterceptor : Interceptor
      {
           private readonly ILogger<ConcurrentTaskLimitInterceptor> _logger;
-          private readonly SemaphoreSlim _concurrencySemaphore;
+          private SemaphoreSlim _concurrencySemaphore;
           private readonly int _maxConcurrentTasks;
 
           public ConcurrentTaskLimitInterceptor(ILogger<ConcurrentTaskLimitInterceptor> logger, IConfiguration configuration)
@@ -22,7 +22,7 @@ namespace ChatSessionService.Interceptors
           {
                _logger.LogInformation($"Starting receiving call. Type: {MethodType.Unary}. " +
                                       $"Method: {context.Method}.");
-               if (_concurrencySemaphore.CurrentCount == _maxConcurrentTasks - 1)
+               if (_concurrencySemaphore.CurrentCount == 0)
                {
                     throw new RpcException(new Status(StatusCode.Unavailable,
                          Newtonsoft.Json.JsonConvert.SerializeObject(new { Code = 429 })));
