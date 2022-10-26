@@ -47,8 +47,7 @@ namespace ExternalServices.Services
 
           private async Task<User?> GetUserFromExternalService(int userId)
           {
-               // var serviceUri = await _consulService.GetRequestUriAsync(_externalServiceName);
-               var serviceUri = new UriBuilder() { Host = "localhost", Port = 9300 }.Uri;
+               var serviceUri = await _consulService.GetRequestUriAsync(_externalServiceName);
 
                using var channel = GrpcChannel.ForAddress(serviceUri);
                var client = new Users.UsersClient(channel);
