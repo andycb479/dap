@@ -28,7 +28,7 @@ namespace ChatSessionService.BL.Service
 
           public async Task Insert(MessageEntity message)
           {
-               ValidateMessage(message);
+               await ValidateMessage(message);
 
                await RemoveChatFromCacheIfPresent(message.FromUserId, message.ToUserId);
 
@@ -37,10 +37,21 @@ namespace ChatSessionService.BL.Service
 
           public async Task<IEnumerable<MessageEntity>> GetChatMessages(int requestUserId, int chatUserId)
           {
+               await ValidateUsers(requestUserId, chatUserId);
+
                var chatCacheKey = CreateChatCacheKey(requestUserId, chatUserId);
                var messages = await _cacheService.GetFromCacheAsync<IEnumerable<MessageEntity>>(chatCacheKey);
-
-               if (messages is not null) return messages;
+               if (messages is not null)
+               {
+                    if (HasUnseenMessagesFromRequestingUser(messages, requestUserId, chatUserId))
+                    {
+                         await RemoveChatFromCacheIfPresent(requestUserId, chatUserId);
+                    }
+                    else
+                    { 
+                         return messages;
+                    }
+               }
 
                await ChangeMessagesForChatToSeen(requestUserId, chatUserId);
 
@@ -63,6 +74,11 @@ namespace ChatSessionService.BL.Service
                return _cacheService.CreateCacheKey(_serviceName, typeof(IEnumerable<MessageEntity>), chatId, String.Empty);
           }
 
+          private bool HasUnseenMessagesFromRequestingUser(IEnumerable<MessageEntity> messages, int requestUserId, int chatUserId)
+          {
+               return messages.Any(x => x.ToUserId == requestUserId && x.FromUserId == chatUserId && x.MessageStatus == MessageStatus.Sent);
+          }
+
           private async Task RemoveChatFromCacheIfPresent(int requestUserId, int chatUserId)
           {
                var chatCacheKey = CreateChatCacheKey(requestUserId, chatUserId);
@@ -78,28 +94,28 @@ namespace ChatSessionService.BL.Service
                     throw new ValidationException("Message content cannot be empty.");
                }
 
-               await ValidateUsers(message);
+               await ValidateUsers(message.FromUserId, message.ToUserId);
           }
 
-          private async Task ValidateUsers(MessageEntity message)
+          private async Task ValidateUsers(int requestUserId, int chatUserId)
           {
-               if (message.FromUserId <= 0)
+               if (requestUserId <= 0)
                {
                     throw new ValidationException("Invalid sender.");
                }
 
-               if (message.ToUserId <= 0)
+               if (chatUserId <= 0)
                {
                     throw new ValidationException("Invalid receiver.");
                }
 
-               var fromUser = await _usersService.GetUserAsync(message.FromUserId);
+               var fromUser = await _usersService.GetUserAsync(requestUserId);
                if (fromUser is null)
                {
                     throw new ValidationException("Sender user cannot be found!");
                }
 
-               var toUser = await _usersService.GetUserAsync(message.ToUserId);
+               var toUser = await _usersService.GetUserAsync(chatUserId);
                if (toUser is null)
                {
                     throw new ValidationException("Receiver user cannot be found!");

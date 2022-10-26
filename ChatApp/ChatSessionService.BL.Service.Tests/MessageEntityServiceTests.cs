@@ -1,5 +1,6 @@
 ﻿using ChatSessionService.BL.Interface;
 using ChatSessionService.DAL.Interface;
+using ExternalServices;
 using ExternalServices.Services;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
@@ -41,7 +42,7 @@ namespace ChatSessionService.BL.Service.Tests
           [Fact]
           public async Task Insert_FromUserIdIsNegative_ThrowsValidationException()
           {
-               var message = new MessageEntity() { FromUserId = -1 };
+               var message = new MessageEntity() { FromUserId = -1, MessageContent = "Test"};
 
                var result = await Assert.ThrowsAsync<ValidationException>(async () => await _messageEntityService.Insert(message));
 
@@ -51,7 +52,7 @@ namespace ChatSessionService.BL.Service.Tests
           [Fact]
           public async Task Insert_ToUserIdIsNegative_ThrowsValidationException()
           {
-               var message = new MessageEntity() { FromUserId = 1, ToUserId = -1 };
+               var message = new MessageEntity() { FromUserId = 1, ToUserId = -1, MessageContent = "Test" };
 
                var result = await Assert.ThrowsAsync<ValidationException>(async () => await _messageEntityService.Insert(message));
 
@@ -79,10 +80,39 @@ namespace ChatSessionService.BL.Service.Tests
           }
 
           [Fact]
+          public async Task Insert_ReceiverUserIsNotFound_ThrowsValidationException()
+          {
+               var toUserId = 3;
+               var fromUserId = 1;
+               var message = new MessageEntity() { ToUserId = toUserId, FromUserId = fromUserId, MessageContent = "Test" };
+               _usersService.Setup(x => x.GetUserAsync(toUserId)).ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(fromUserId)).ReturnsAsync(new User());
+
+               var result = await Assert.ThrowsAsync<ValidationException>(async () => await _messageEntityService.Insert(message));
+
+               Assert.Equal("Receiver user cannot be found!", result.Message);
+          }
+
+          [Fact]
+          public async Task Insert_SenderUserIsNotFound_ThrowsValidationException()
+          {
+               var toUserId = 3;
+               var fromUserId = 1;
+               var message = new MessageEntity() { ToUserId = toUserId, FromUserId = fromUserId, MessageContent = "Test" };
+               _usersService.Setup(x => x.GetUserAsync(fromUserId)).ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(toUserId)).ReturnsAsync(new User());
+
+               var result = await Assert.ThrowsAsync<ValidationException>(async () => await _messageEntityService.Insert(message));
+
+               Assert.Equal("Sender user cannot be found!", result.Message);
+          }
+
+          [Fact]
           public async Task Insert_MessageContentPresent_CallsCreateCacheKeyWithCorrectChatId()
           {
                var message = new MessageEntity() { ToUserId = 10, FromUserId = 20, MessageContent = "Message" };
                var expectedChatId = "10:20";
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.Insert(message);
 
@@ -96,6 +126,7 @@ namespace ChatSessionService.BL.Service.Tests
                var expectedCacheKey = "cacheKey";
                _cacheService.Setup(x => x.CreateCacheKey(It.IsAny<string>(), typeof(IEnumerable<MessageEntity>),
                     It.IsAny<string>(), It.IsAny<string>())).Returns(expectedCacheKey);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.Insert(message);
 
@@ -108,6 +139,7 @@ namespace ChatSessionService.BL.Service.Tests
                var message = new MessageEntity() { ToUserId = 10, FromUserId = 20, MessageContent = "Message" };
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.Insert(message);
 
@@ -120,6 +152,7 @@ namespace ChatSessionService.BL.Service.Tests
                var message = new MessageEntity() { ToUserId = 10, FromUserId = 20, MessageContent = "Message" };
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(new List<MessageEntity>());
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.Insert(message);
 
@@ -130,6 +163,7 @@ namespace ChatSessionService.BL.Service.Tests
           public async Task Insert_MessageContentPresent_CallsInsertOneAsync()
           {
                var message = new MessageEntity() { ToUserId = 10, FromUserId = 20, MessageContent = "Message" };
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.Insert(message);
 
@@ -148,11 +182,39 @@ namespace ChatSessionService.BL.Service.Tests
           }
 
           [Fact]
+          public async Task GetChatMessages_ReceiverUserIsNotFound_ThrowsValidationException()
+          {
+               var toUserId = 3;
+               var fromUserId = 1;
+               var message = new MessageEntity() { ToUserId = toUserId, FromUserId = fromUserId, MessageContent = "Test" };
+               _usersService.Setup(x => x.GetUserAsync(toUserId)).ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(fromUserId)).ReturnsAsync(new User());
+
+               var result = await Assert.ThrowsAsync<ValidationException>(async () => await _messageEntityService.GetChatMessages(fromUserId, toUserId));
+
+               Assert.Equal("Receiver user cannot be found!", result.Message);
+          }
+
+          [Fact]
+          public async Task GetChatMessages_SenderUserIsNotFound_ThrowsValidationException()
+          {
+               var toUserId = 3;
+               var fromUserId = 1;
+               _usersService.Setup(x => x.GetUserAsync(fromUserId)).ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(toUserId)).ReturnsAsync(new User());
+
+               var result = await Assert.ThrowsAsync<ValidationException>(async () => await _messageEntityService.GetChatMessages(fromUserId, toUserId));
+
+               Assert.Equal("Sender user cannot be found!", result.Message);
+          }
+
+          [Fact]
           public async Task GetChatMessages_CallsCreateCacheKeyWithExpectedChatId()
           {
                var requestUserId = 1;
                var chatUserId = 2;
                var expectedChatId = "1:2";
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
@@ -167,6 +229,7 @@ namespace ChatSessionService.BL.Service.Tests
                var expectedCacheKey = "cacheKey";
                _cacheService.Setup(x => x.CreateCacheKey(It.IsAny<string>(), typeof(IEnumerable<MessageEntity>),
                     It.IsAny<string>(), It.IsAny<string>())).Returns(expectedCacheKey);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
@@ -181,6 +244,7 @@ namespace ChatSessionService.BL.Service.Tests
                var cacheMessages = new List<MessageEntity>();
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(cacheMessages);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                var result = await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
@@ -194,10 +258,60 @@ namespace ChatSessionService.BL.Service.Tests
                var chatUserId = 2;
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
                _messagesRepository.Verify(x => x.UpdateUserChatMessagesToSeen(requestUserId, chatUserId), Times.Once);
+          }
+
+          [Fact]
+          public async Task GetChatMessages_MesssagesPresentInCache_UserHasUnseenMessages_MessagesAreRemovedFromCache()
+          {
+               var requestUserId = 1;
+               var chatUserId = 2;
+               _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
+                    .ReturnsAsync(new List<MessageEntity>()
+                    {
+                         new ()
+                         {
+                              FromUserId = 2, ToUserId = 1, MessageStatus = MessageStatus.Sent
+                         },
+                         new ()
+                         {
+                              FromUserId = 2, ToUserId = 1, MessageStatus = MessageStatus.Sent
+                         },
+                    });
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
+
+               await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
+
+               _cacheService.Verify(x => x.RemoveAsync(It.IsAny<string>()), Times.Once);
+          }
+
+          [Fact]
+          public async Task GetChatMessages_MesssagesPresentInCache_UserDoesNotHaveUnseenMessages_ExpectedMessagesAreReturned()
+          {
+               var requestUserId = 1;
+               var chatUserId = 2;
+               _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
+                    .ReturnsAsync(new List<MessageEntity>()
+                    {
+                         new ()
+                         {
+                              FromUserId = 1, ToUserId = 2, MessageStatus = MessageStatus.Sent
+                         },
+                         new ()
+                         {
+                              FromUserId = 1, ToUserId = 2, MessageStatus = MessageStatus.Sent
+                         },
+                    });
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
+
+               var result = await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
+
+               Assert.Equal(MessageStatus.Sent, result.First().MessageStatus);
+               Assert.Equal(MessageStatus.Sent, result.ElementAt(1).MessageStatus);
           }
 
           [Fact]
@@ -207,6 +321,7 @@ namespace ChatSessionService.BL.Service.Tests
                var chatUserId = 2;
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(value: null);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
@@ -233,6 +348,7 @@ namespace ChatSessionService.BL.Service.Tests
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(value: null);
                _messagesRepository.Setup(x => x.GetChatMessages(requestUserId, chatUserId)).ReturnsAsync(messages);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
@@ -259,6 +375,7 @@ namespace ChatSessionService.BL.Service.Tests
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(value: null);
                _messagesRepository.Setup(x => x.GetChatMessages(requestUserId, chatUserId)).ReturnsAsync(messages);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 
@@ -283,6 +400,7 @@ namespace ChatSessionService.BL.Service.Tests
                _cacheService.Setup(x => x.GetFromCacheAsync<IEnumerable<MessageEntity>>(It.IsAny<string>()))
                     .ReturnsAsync(value: null);
                _messagesRepository.Setup(x => x.GetChatMessages(requestUserId, chatUserId)).ReturnsAsync(messages);
+               _usersService.Setup(x => x.GetUserAsync(It.IsAny<int>())).ReturnsAsync(new User());
 
                var result = await _messageEntityService.GetChatMessages(requestUserId, chatUserId);
 

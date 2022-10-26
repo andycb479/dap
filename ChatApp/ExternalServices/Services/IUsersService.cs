@@ -2,5 +2,5 @@
 
 public interface IUsersService
 {
-     Task<User> GetUserAsync(int userId);
+     Task<User?> GetUserAsync(int userId);
 }
