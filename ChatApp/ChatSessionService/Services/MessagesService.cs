@@ -52,13 +52,14 @@ namespace ChatSessionService.Services
 
                     return await Task.FromResult(new GenericReply { Response = e.Message });
                }
+               catch (TimeoutException)
+               {
+                    _logger.LogError("One of the tasks timed out!");
+                    throw new RpcException(new Status(StatusCode.DeadlineExceeded,
+                         Newtonsoft.Json.JsonConvert.SerializeObject(new { Code = 408 })));
+               }
                catch (Exception e)
                {
-                    if (e is TimeoutException)
-                    {
-                         _logger.LogError("One of the tasks timed out!");
-                    }
-
                     return await Task.FromResult(new GenericReply { Response = "Message sent failed." });
                }
           }
@@ -84,9 +85,15 @@ namespace ChatSessionService.Services
                          request.RequestUserId, request.ChatUserId, e.Message);
                     throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid chat arguments."));
                }
+               catch (TimeoutException)
+               {
+                    _logger.LogError("One of the tasks timed out!");
+                    throw new RpcException(new Status(StatusCode.DeadlineExceeded,
+                         Newtonsoft.Json.JsonConvert.SerializeObject(new { Code = 408 })));
+               }
                catch (Exception e)
                {
-                   _logger.LogError(e.Message);
+                    _logger.LogError(e.Message);
                }
           }
 

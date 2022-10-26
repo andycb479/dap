@@ -35,7 +35,7 @@ namespace ExternalServices.Services
                     return user;
                }
 
-               user = await (GetUserFromExternalService(userId).TimeoutAfter<User>(_maxTimeout));
+               user = await (GetUserFromExternalService(userId).TimeoutAfter(_maxTimeout));
                await _cacheService.SetInCacheAsync(user, cacheKey, CacheExpiryType.TwoMinutes);
                return user;
           }
