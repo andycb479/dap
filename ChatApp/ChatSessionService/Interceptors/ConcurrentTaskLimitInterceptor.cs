@@ -51,7 +51,7 @@ namespace ChatSessionService.Interceptors
                _logger.LogInformation($"Starting receiving call. Type: {MethodType.ServerStreaming}. " +
                                       $"Method: {context.Method}.");
 
-               if (_concurrencySemaphore.CurrentCount == _maxConcurrentTasks - 1)
+               if (_concurrencySemaphore.CurrentCount == 0)
                {
                     throw new RpcException(new Status(StatusCode.Unavailable,
                          Newtonsoft.Json.JsonConvert.SerializeObject(new { Code = 429 })));
