@@ -50,17 +50,20 @@ namespace ChatSessionService.Services
                          "A validation error occurred when sending a message from {FromUserId} to {ToUserId}. {validationMessage}",
                          request.FromUserId, request.ToUserId, e.Message);
 
-                    return await Task.FromResult(new GenericReply { Response = e.Message });
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, e.Message));
                }
                catch (TimeoutException)
                {
                     _logger.LogError("One of the tasks timed out!");
+
                     throw new RpcException(new Status(StatusCode.DeadlineExceeded,
                          Newtonsoft.Json.JsonConvert.SerializeObject(new { Code = 408 })));
                }
                catch (Exception e)
                {
-                    return await Task.FromResult(new GenericReply { Response = "Message sent failed." });
+                    _logger.LogError("Error:{message}", e.Message);
+
+                    throw new RpcException(new Status(StatusCode.Internal, "Message sent failed."));
                }
           }
 
@@ -83,17 +86,21 @@ namespace ChatSessionService.Services
                     _logger.LogError(
                          "A validation error occurred when receiving chat for {RequestUserId} and {ChatUserId}. Message: {Message}",
                          request.RequestUserId, request.ChatUserId, e.Message);
+
                     throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid chat arguments."));
                }
                catch (TimeoutException)
                {
                     _logger.LogError("One of the tasks timed out!");
+
                     throw new RpcException(new Status(StatusCode.DeadlineExceeded,
                          Newtonsoft.Json.JsonConvert.SerializeObject(new { Code = 408 })));
                }
                catch (Exception e)
                {
-                    _logger.LogError(e.Message);
+                    _logger.LogError("Error:{message}", e.Message);
+
+                    throw new RpcException(new Status(StatusCode.Internal, "Chat retrieval failed."));
                }
           }
 
