@@ -6,7 +6,6 @@ import com.pad.Gateway.dto.message.SendMessageDto;
 import com.pad.Gateway.services.MessagesService;
 import com.pad.Gateway.services.impl.load.balance.MessagesRequestsLoadBalancer;
 import messages.GenericReply;
-import messages.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,19 +36,7 @@ public class MessagesServicesImpl implements MessagesService {
             .setChatUserId(chatDto.getChatUserId())
             .build();
 
-    LinkedList<Message> chatList = loadBalancer.distributeChatRequest(request);
-    LinkedList<MessageDto> messageDtos = new LinkedList<>();
-    chatList.forEach(
-        chat ->
-            messageDtos.add(
-                new MessageDto(
-                    chat.getMessageStatus(),
-                    chat.getFromUserId(),
-                    chat.getToUserId(),
-                    chat.getDate(),
-                    chat.getMessageContent())));
-
-    return messageDtos;
+    return loadBalancer.distributeChatRequest(request);
   }
 
   @Override

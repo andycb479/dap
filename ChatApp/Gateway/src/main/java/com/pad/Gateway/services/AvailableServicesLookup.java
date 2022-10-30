@@ -41,6 +41,11 @@ public class AvailableServicesLookup {
     refresh_rate = Integer.parseInt(Objects.requireNonNull(env.getProperty("refresh.rate")));
     is_dev_env = Boolean.parseBoolean(Objects.requireNonNull(env.getProperty("dev.env")));
     consul_url = env.getProperty("consul.url");
+
+    if (is_dev_env) {
+      consul_url = "http://127.0.0.1:8500/";
+    }
+
     client = Consul.builder().withUrl(consul_url).build();
     healthClient = client.healthClient();
   }

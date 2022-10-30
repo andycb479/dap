@@ -4,6 +4,7 @@ import com.pad.Gateway.dto.user.UpdateStatusDto;
 import com.pad.Gateway.dto.user.UserDto;
 import com.pad.Gateway.services.UserService;
 import com.pad.Gateway.services.impl.load.balance.UsersRequestsLoadBalancer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,12 @@ import users.UserIdRequest;
 import users.UserStatus;
 import users.UsersRequest;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UsersServiceImpl implements UserService {
 
   @Autowired UsersRequestsLoadBalancer loadBalancer;
@@ -36,10 +39,10 @@ public class UsersServiceImpl implements UserService {
   public List<UserDto> getUsers() {
     UsersRequest request = UsersRequest.newBuilder().build();
 
-    List<User> users = loadBalancer.getNextAvailableService().getUsersRequest(request);
+    Iterator<User> users = loadBalancer.getNextAvailableService().getUsersRequest(request);
     List<UserDto> usersToReturn = new LinkedList<>();
 
-    users.forEach(
+    users.forEachRemaining(
         user -> {
           UserDto userDto = new UserDto();
           BeanUtils.copyProperties(user, userDto);
