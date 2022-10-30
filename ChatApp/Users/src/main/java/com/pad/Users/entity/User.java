@@ -11,10 +11,8 @@ import javax.persistence.Id;
 @Getter
 @Setter
 public class User {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String status;
+  @Id @GeneratedValue private Long id;
+  private String firstName;
+  private String lastName;
+  private String status;
 }
