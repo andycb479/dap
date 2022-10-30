@@ -16,6 +16,9 @@ import users.UsersRequest;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
+
+import static com.pad.Gateway.services.util.CircuitBreakerContext.getUserServiceCB;
 
 @Service
 @Slf4j
@@ -27,9 +30,12 @@ public class UsersServiceImpl implements UserService {
   public UserDto getUser(int id) {
     UserIdRequest request = UserIdRequest.newBuilder().setUserId(id).build();
 
-    User user = loadBalancer.getNextAvailableService().getUserRequest(request);
-    UserDto userToReturn = new UserDto();
+    Supplier<User> messageSupplier =
+        () -> loadBalancer.getNextAvailableService().getUserRequest(request);
+    Supplier<User> decoratedMessageSupplier = getUserServiceCB().decorateSupplier(messageSupplier);
+    User user = decoratedMessageSupplier.get();
 
+    UserDto userToReturn = new UserDto();
     BeanUtils.copyProperties(user, userToReturn);
 
     return userToReturn;
@@ -39,7 +45,12 @@ public class UsersServiceImpl implements UserService {
   public List<UserDto> getUsers() {
     UsersRequest request = UsersRequest.newBuilder().build();
 
-    Iterator<User> users = loadBalancer.getNextAvailableService().getUsersRequest(request);
+    Supplier<Iterator<User>> messageSupplier =
+        () -> loadBalancer.getNextAvailableService().getUsersRequest(request);
+    Supplier<Iterator<User>> decoratedMessageSupplier =
+        getUserServiceCB().decorateSupplier(messageSupplier);
+    Iterator<User> users = decoratedMessageSupplier.get();
+
     List<UserDto> usersToReturn = new LinkedList<>();
 
     users.forEachRemaining(
@@ -61,9 +72,12 @@ public class UsersServiceImpl implements UserService {
             .setStatus(userDto.getStatus())
             .build();
 
-    User createdUser = loadBalancer.getNextAvailableService().createUserRequest(request);
-    UserDto userToReturn = new UserDto();
+    Supplier<User> messageSupplier =
+        () -> loadBalancer.getNextAvailableService().createUserRequest(request);
+    Supplier<User> decoratedMessageSupplier = getUserServiceCB().decorateSupplier(messageSupplier);
+    User createdUser = decoratedMessageSupplier.get();
 
+    UserDto userToReturn = new UserDto();
     BeanUtils.copyProperties(createdUser, userToReturn);
 
     return userToReturn;
@@ -72,7 +86,8 @@ public class UsersServiceImpl implements UserService {
   @Override
   public void deleteUser(int id) {
     UserIdRequest request = UserIdRequest.newBuilder().setUserId(id).build();
-    loadBalancer.getNextAvailableService().deleteUserRequest(request);
+    Runnable runnable = () -> loadBalancer.getNextAvailableService().deleteUserRequest(request);
+    getUserServiceCB().decorateRunnable(runnable).run();
   }
 
   @Override
@@ -85,9 +100,12 @@ public class UsersServiceImpl implements UserService {
             .setStatus(userDto.getStatus())
             .build();
 
-    User updatedUser = loadBalancer.getNextAvailableService().updateUserRequest(request);
-    UserDto userToReturn = new UserDto();
+    Supplier<User> messageSupplier =
+        () -> loadBalancer.getNextAvailableService().updateUserRequest(request);
+    Supplier<User> decoratedMessageSupplier = getUserServiceCB().decorateSupplier(messageSupplier);
+    User updatedUser = decoratedMessageSupplier.get();
 
+    UserDto userToReturn = new UserDto();
     BeanUtils.copyProperties(updatedUser, userToReturn);
 
     return userToReturn;
@@ -101,10 +119,12 @@ public class UsersServiceImpl implements UserService {
             .setStatus(userDto.getStatus())
             .build();
 
-    User userWithUpdatedStatus =
-        loadBalancer.getNextAvailableService().changeUserStatusRequest(request);
-    UserDto userToReturn = new UserDto();
+    Supplier<User> messageSupplier =
+        () -> loadBalancer.getNextAvailableService().changeUserStatusRequest(request);
+    Supplier<User> decoratedMessageSupplier = getUserServiceCB().decorateSupplier(messageSupplier);
+    User userWithUpdatedStatus = decoratedMessageSupplier.get();
 
+    UserDto userToReturn = new UserDto();
     BeanUtils.copyProperties(userWithUpdatedStatus, userToReturn);
 
     return userToReturn;

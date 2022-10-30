@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
+import java.util.function.Supplier;
+
+import static com.pad.Gateway.services.util.CircuitBreakerContext.getChatServiceCB;
 
 @Service
 public class MessagesServicesImpl implements MessagesService {
@@ -25,7 +28,11 @@ public class MessagesServicesImpl implements MessagesService {
             .setToUserId(messageDto.getToUserId())
             .build();
 
-    return loadBalancer.distributeMessageRequest(request);
+    Supplier<GenericReply> messageSupplier = () -> loadBalancer.distributeMessageRequest(request);
+    Supplier<GenericReply> decoratedMessageSupplier =
+        getChatServiceCB().decorateSupplier(messageSupplier);
+
+    return decoratedMessageSupplier.get();
   }
 
   @Override
@@ -36,7 +43,12 @@ public class MessagesServicesImpl implements MessagesService {
             .setChatUserId(chatDto.getChatUserId())
             .build();
 
-    return loadBalancer.distributeChatRequest(request);
+    Supplier<LinkedList<MessageDto>> messageSupplier =
+        () -> loadBalancer.distributeChatRequest(request);
+    Supplier<LinkedList<MessageDto>> decoratedMessageSupplier =
+        getChatServiceCB().decorateSupplier(messageSupplier);
+
+    return decoratedMessageSupplier.get();
   }
 
   @Override
@@ -47,6 +59,11 @@ public class MessagesServicesImpl implements MessagesService {
             .setChatUserId(chatDto.getChatUserId())
             .build();
 
-    loadBalancer.distributeChatRequest(request);
+    Supplier<LinkedList<MessageDto>> messageSupplier =
+        () -> loadBalancer.distributeChatRequest(request);
+    Supplier<LinkedList<MessageDto>> decoratedMessageSupplier =
+        getChatServiceCB().decorateSupplier(messageSupplier);
+
+    decoratedMessageSupplier.get();
   }
 }
