@@ -2,9 +2,17 @@ services:
     consul:
         ports:
              - "8500:8500"
-    redis:
+    redis_master:
         ports:
              - "6379:6379"
+             
+    redis_repl_1:
+        ports:
+             - "7000:6379"
+
+    redis_repl_2:
+        ports:
+             - "7001:6379"             
 
     chatsessionservice1:
         environment:
@@ -12,7 +20,7 @@ services:
           - ServiceConfig__Id=ChatSessionService-9100
           - ServiceConfig__Name=ChatSessionService
           - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__RedisHostname=redisacl,user=chatsessionservice,password=password
+          - ServiceConfig__RedisHostname=redisacl,user=chatsessionservice,password=password,abortConnect=false
           - ServiceConfig__RedisInstanceName=Cache
           - ServiceConfig__Address=chatsessionservice1
           - ServiceConfig__Port=80
@@ -20,6 +28,27 @@ services:
             - 9100:80
         depends_on:
             - consul
+
+    mysql:
+        environment:
+            MYSQL_DATABASE: 'users'
+            MYSQL_ROOT_PASSWORD: 'root'
+        ports:
+            - 3306:3306
+
+    usersservice:
+        depends_on:
+            - mysql
+        ports:
+            - 9300:80
+
+    gateway:
+        environment:
+            REFRESH.RATE: 3500
+        depends_on:
+            - consul
+        ports:
+            - 8084:8084
 
 networks:
     common_network:

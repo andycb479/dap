@@ -6,15 +6,36 @@ services:
         container_name: consul
         networks:
             - common_network
-   redis:
-        container_name: redisacl
-        image: redisacl:latest
-        hostname: redisacl
+            
+   redis_master:
+        container_name: redis_master
+        image: redis_master:latest
+        hostname: redis_master
         build:
             context: .
-            dockerfile: Redis/Dockerfile
+            dockerfile: Redis_Master/Dockerfile
         networks:
             - common_network
+            
+   redis_repl_1:
+        container_name: redis_repl_1
+        image: redis_replica:latest
+        hostname: redis_repl_1
+        build:
+            context: .
+            dockerfile: Redis_Replica/Dockerfile
+        networks:
+            - common_network
+
+   redis_repl_2:
+        container_name: redis_repl_2
+        image: redis_replica:latest
+        hostname: redis_repl_2
+        build:
+            context: .
+            dockerfile: Redis_Replica/Dockerfile
+        networks:
+            - common_network           
 
    chatsessionservice1:
         container_name: chatsessionservice1
