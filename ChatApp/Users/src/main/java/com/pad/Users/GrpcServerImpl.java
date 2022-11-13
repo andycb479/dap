@@ -16,20 +16,19 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-public class GrpcServerImpl implements GrpcServer{
+public class GrpcServerImpl implements GrpcServer {
 
-    @Autowired
-    GrpcService grpcService;
+  @Autowired GrpcService grpcService;
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Override
-    public void run() throws IOException, InterruptedException, NotRegisteredException {
-        Server grpcServer = ServerBuilder.forPort(80).addService((BindableService) grpcService).build();
-        grpcServer.start();
+  @EventListener(ApplicationReadyEvent.class)
+  @Override
+  public void run() throws IOException, InterruptedException, NotRegisteredException {
+    Server grpcServer = ServerBuilder.forPort(80).addService((BindableService) grpcService).build();
+    grpcServer.start();
 
-        log.info("gRPC server started!");
-        ServiceRegistration.registerService();
+    log.info("gRPC server started!");
+    ServiceRegistration.registerService();
 
-        grpcServer.awaitTermination();
-    }
+    grpcServer.awaitTermination();
+  }
 }
