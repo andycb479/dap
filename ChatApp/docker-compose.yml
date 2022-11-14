@@ -6,6 +6,12 @@ services:
         container_name: consul
         networks:
             - common_network
+   elk:
+        image: sebp/elk
+        hostname: elk
+        container_name: elk
+        networks:
+            - common_network
             
    redis_master:
         container_name: redis_master
