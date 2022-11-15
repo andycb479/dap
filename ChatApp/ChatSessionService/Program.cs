@@ -2,12 +2,17 @@ using System.Reflection;
 using ChatSessionService.Configuration;
 using ChatSessionService.Interceptors;
 using ChatSessionService.Services;
+using Serilog;
 using Services.Core.ServiceDiscovery;
 using Services.Infrastructure.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+
+builder.Host.UseSerilog((hostContext, services, configuration) => {
+     configuration.WriteTo.Console();
+     configuration.Enrich.FromLogContext();
+     configuration.WriteTo.Http("http://localhost:5044", null);
+});
 
 builder.Services.AddGrpc(options=>options.Interceptors.Add<ConcurrentTaskLimitInterceptor>());
 builder.Services.AddConsul(builder.Configuration.GetServiceConfig());

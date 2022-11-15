@@ -7,9 +7,12 @@ services:
         networks:
             - common_network
    elk:
-        image: sebp/elk
+        container_name: elk_stack
+        image: elk_stack:latest
         hostname: elk
-        container_name: elk
+        build:
+            context: .
+            dockerfile: ELK/Dockerfile
         networks:
             - common_network
             
