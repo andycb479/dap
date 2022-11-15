@@ -16,7 +16,8 @@ namespace ChatSessionService.DAL.Service
           public MongoRepository(IMongoDbSettings settings)
           {
                var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
-               Collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)));
+               Collection = database.GetCollection<TDocument>(GetCollectionName(typeof(TDocument)))
+                    .WithReadPreference(new ReadPreference(settings.ReadPreferenceMode));
           }
 
           private protected string GetCollectionName(Type documentType)
