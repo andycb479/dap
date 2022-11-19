@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Whitebox;
-import users.User;
 import users.UserIdRequest;
 
 import static org.junit.Assert.assertEquals;
@@ -36,9 +35,10 @@ public class UsersServiceTest {
     int id = 1;
     UserIdRequest request = UserIdRequest.newBuilder().setUserId(id).build();
 
-    User user = User.newBuilder().setUserId(1).build();
+    UserDto userToReturn = new UserDto();
+    userToReturn.setUserId(id);
 
-    when(loadBalancer.getNextAvailableService().getUserRequest(request)).thenReturn(user);
+    when(loadBalancer.distributeGetUserRequest(request)).thenReturn(userToReturn);
 
     UserDto userDto = userService.getUser(id);
 
