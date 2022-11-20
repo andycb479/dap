@@ -56,7 +56,11 @@ namespace ExternalServices.Services
                     var reply = await client.GetUserAsync(new UserIdRequest() { UserId = userId });
                     return reply;
                }
-               catch (RpcException e)
+               catch (RpcException e) when (e.StatusCode == StatusCode.Unavailable)
+               {
+                    throw new Exception("No users service instance is available!");
+               }
+               catch (RpcException e) when (e.StatusCode == StatusCode.Unknown)
                {
                     return null;
                }
