@@ -8,10 +8,11 @@ using Services.Infrastructure.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((hostContext, services, configuration) => {
+builder.Host.UseSerilog((hostContext, services, configuration) =>
+{
      configuration.WriteTo.Console();
      configuration.Enrich.FromLogContext();
-     configuration.WriteTo.Http("http://localhost:5044", null);
+     configuration.WriteTo.Http(builder.Configuration.GetValue<string>("LogstashUri"), null);
 });
 
 builder.Services.AddGrpc(options=>options.Interceptors.Add<ConcurrentTaskLimitInterceptor>());

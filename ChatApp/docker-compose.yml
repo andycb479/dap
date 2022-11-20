@@ -19,7 +19,7 @@ services:
    redis_master:
         container_name: redis_master
         image: redis_master:latest
-        hostname: redis_master
+        hostname: redis
         build:
             context: .
             dockerfile: Redis_Master/Dockerfile
