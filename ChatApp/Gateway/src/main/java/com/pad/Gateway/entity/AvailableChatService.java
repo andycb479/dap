@@ -2,6 +2,7 @@ package com.pad.Gateway.entity;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import messages.Message;
 import messages.MessagesGrpc;
@@ -31,13 +32,15 @@ public class AvailableChatService {
     stream_stub = newBlockingStub(managedChannel).withWaitForReady();
   }
 
-  public messages.GenericReply sendMessageRequest(messages.SendMessageRequest messageRequest) {
+  public messages.GenericReply sendMessageRequest(messages.SendMessageRequest messageRequest)
+      throws StatusRuntimeException {
     messages.GenericReply reply = stub.sendMessage(messageRequest);
     log.info(reply.getResponse());
     return reply;
   }
 
-  public Iterator<Message> sendChatRequest(messages.ChatRequest chatRequest) {
+  public Iterator<Message> sendChatRequest(messages.ChatRequest chatRequest)
+      throws StatusRuntimeException {
     return stream_stub.withDeadlineAfter(6, TimeUnit.SECONDS).getChatMessages(chatRequest);
   }
 

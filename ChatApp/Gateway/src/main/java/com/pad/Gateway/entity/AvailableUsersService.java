@@ -2,6 +2,7 @@ package com.pad.Gateway.entity;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import users.*;
 
@@ -28,28 +29,28 @@ public class AvailableUsersService {
     stream_stub = UsersGrpc.newBlockingStub(managedChannel).withWaitForReady();
   }
 
-  public User createUserRequest(User request) {
+  public User createUserRequest(User request) throws StatusRuntimeException {
     return stub.createUser(request);
   }
 
-  public User getUserRequest(UserIdRequest request) {
+  public User getUserRequest(UserIdRequest request) throws StatusRuntimeException {
     return stub.getUser(request);
   }
 
-  public User changeUserStatusRequest(UserStatus request) {
+  public User changeUserStatusRequest(UserStatus request) throws StatusRuntimeException {
     return stub.changeUserStatus(request);
   }
 
-  public User updateUserRequest(User request) {
+  public User updateUserRequest(User request) throws StatusRuntimeException {
     return stub.updateUser(request);
   }
 
-  public void deleteUserRequest(UserIdRequest request) {
+  public String deleteUserRequest(UserIdRequest request) throws StatusRuntimeException {
     GenericReply response = stub.deleteUser(request);
-    log.error(response.getResponse());
+    return response.getResponse();
   }
 
-  public Iterator<User> getUsersRequest(UsersRequest request) {
+  public Iterator<User> getUsersRequest(UsersRequest request) throws StatusRuntimeException {
     return stream_stub.withDeadlineAfter(6, TimeUnit.SECONDS).getUsers(request);
   }
 

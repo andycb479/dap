@@ -110,6 +110,7 @@ public class AvailableServicesLookup {
       log.info("Dev env enabled");
 
       availableChatServices.add(new AvailableChatService("9100", "127.0.0.1"));
+      availableChatServices.add(new AvailableChatService("9400", "127.0.0.1"));
       availableUsersServices.add(new AvailableUsersService("9300", "127.0.0.1"));
     } else {
       Thread thread = new Thread(runnable);
