@@ -17,7 +17,7 @@ public class SingleMessageResRequestBuilder implements FinalEntityRequestBuilder
   public Object createAndExecuteRequest(
       Supplier<Object> messageSupplier, AvailableServicesLookup availableServicesLookup) {
     int servicesTriedCount = 0;
-    int servicesToTryCount = availableServicesLookup.getAvailableUsersServices().size();
+    int servicesToTryCount = availableServicesLookup.getAvailableChatServices().size();
 
     while (servicesTriedCount < servicesToTryCount
         && servicesTriedCount <= MAX_REDISTRIBUTION_TRIES) {
@@ -25,7 +25,7 @@ public class SingleMessageResRequestBuilder implements FinalEntityRequestBuilder
         return messageSupplier.get();
       } catch (StatusRuntimeException exception) {
         servicesTriedCount++;
-        servicesToTryCount = availableServicesLookup.getAvailableUsersServices().size();
+        servicesToTryCount = availableServicesLookup.getAvailableChatServices().size();
         handleException(exception);
       }
     }
