@@ -22,7 +22,7 @@ public class MultipleMessagesResRequestBuilder implements FinalEntityRequestBuil
   public Object createAndExecuteRequest(
       Supplier<Object> messageSupplier, AvailableServicesLookup availableServicesLookup) {
     int servicesTriedCount = 0;
-    int servicesToTryCount = availableServicesLookup.getAvailableUsersServices().size();
+    int servicesToTryCount = availableServicesLookup.getAvailableChatServices().size();
 
     while (servicesTriedCount < servicesToTryCount
         && servicesTriedCount <= MAX_REDISTRIBUTION_TRIES) {
@@ -43,7 +43,7 @@ public class MultipleMessagesResRequestBuilder implements FinalEntityRequestBuil
         return messageDtos;
       } catch (StatusRuntimeException exception) {
         servicesTriedCount++;
-        servicesToTryCount = availableServicesLookup.getAvailableUsersServices().size();
+        servicesToTryCount = availableServicesLookup.getAvailableChatServices().size();
         handleException(exception);
       }
     }
