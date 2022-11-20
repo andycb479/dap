@@ -27,10 +27,12 @@ services:
           - ServiceConfig__Id=ChatSessionService-9100
           - ServiceConfig__Name=ChatSessionService
           - ServiceConfig__DiscoveryAddress=http://consul:8500
-          - ServiceConfig__RedisHostname=redis_master,user=chatsessionservice,password=password,abortConnect=false
+          - ServiceConfig__RedisHostname=redis,user=chatsessionservice,password=password,abortConnect=false
           - ServiceConfig__RedisInstanceName=Cache
           - ServiceConfig__Address=chatsessionservice1
           - ServiceConfig__Port=80
+          - ServiceConfig__MaxTimeoutUsersService=3000
+          - ServiceConfig__MaxConcurrentTasks=0
         ports:
             - 9100:80
         depends_on:

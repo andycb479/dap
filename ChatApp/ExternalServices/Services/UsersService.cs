@@ -21,7 +21,7 @@ namespace ExternalServices.Services
           {
                _consulService = consulService;
                _cacheService = cacheService;
-               _maxTimeout = configuration.GetValue<int>("TaskTimeout:MaxTimeout"); ;
+               _maxTimeout = configuration.GetValue<int?>("ServiceConfig:MaxTimeoutUsersService") ?? configuration.GetValue<int>("TaskTimeout:MaxTimeout");
                _externalServiceName = configuration.GetValue<string>("ExternalServicesNames:UsersService") ?? "UsersService";
                _currentServiceName = "ChatSessionService";
           }
