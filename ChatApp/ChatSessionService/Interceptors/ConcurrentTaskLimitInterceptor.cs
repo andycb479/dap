@@ -12,7 +12,7 @@ namespace ChatSessionService.Interceptors
           public ConcurrentTaskLimitInterceptor(ILogger<ConcurrentTaskLimitInterceptor> logger, IConfiguration configuration)
           {
                _logger = logger;
-               _maxConcurrentTasks = configuration.GetValue<int>("ConcurrentTaskLimit:MaxConcurrentTasks");
+               _maxConcurrentTasks = configuration.GetValue<int?>("ServiceConfig:MaxConcurrentTasks") ?? configuration.GetValue<int>("ConcurrentTaskLimit:MaxConcurrentTasks");
                _concurrencySemaphore =
                     new SemaphoreSlim(_maxConcurrentTasks);
           }
