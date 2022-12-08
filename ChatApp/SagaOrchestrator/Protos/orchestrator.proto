@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "SagaOrchestrator";
+
+package orchestrator;
+
+service Orchestrator {
+  rpc DeleteUser(DeleteUserRequest) returns (GenericReply);
+}
+
+message DeleteUserRequest {
+  int32 userId = 1;
+}
+
+message GenericReply {
+  string response = 1;
+}
