@@ -15,7 +15,7 @@ namespace ExternalServices.Services
           {
           }
 
-          public async Task DeleteUserMessages()
+          public async Task DeleteUserMessages(int userId)
           {
                var client = await GetRpcGetClient();
                try
@@ -31,7 +31,7 @@ namespace ExternalServices.Services
                }
           }
 
-          public async Task RollbackDeleteUserMessages()
+          public async Task RollbackDeleteUserMessages(int userId)
           {
                var client = await GetRpcGetClient();
           }
