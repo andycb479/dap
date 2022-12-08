@@ -6,5 +6,6 @@ namespace ChatSessionService.DAL.Interface
      {
           Task<IEnumerable<MessageEntity>> GetChatMessages(int requestUserId, int chatUserId);
           Task UpdateUserChatMessagesToSeen(int requestUserId, int chatUserId);
+          Task DeleteUserChats(int userId);
      }
 }

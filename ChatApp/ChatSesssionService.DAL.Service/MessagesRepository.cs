@@ -31,5 +31,14 @@ namespace ChatSessionService.DAL.Service
 
                await Collection.UpdateManyAsync(filter, update);
           }
+
+          public async Task DeleteUserChats(int userId)
+          {
+               var builder = Builders<MessageEntity>.Filter;
+               var filter = builder.Eq(_ => _.FromUserId, userId);
+               filter |= builder.Eq(_ => _.ToUserId, userId);
+
+               await Collection.DeleteManyAsync(filter);
+          }
      }
 }

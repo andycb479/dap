@@ -8,6 +8,11 @@ service Messages {
   rpc SendMessage(SendMessageRequest) returns (GenericReply);
   rpc GetChatMessages(ChatRequest) returns (stream Message);
   rpc ChangeMessagesForChatToSeen(ChatRequest) returns (GenericReply);
+  rpc DeleteUserChats(UserIdRequest) returns (GenericReply);
+}
+
+message UserIdRequest {
+  int32 userId = 1;
 }
 
 message SendMessageRequest {

@@ -10,6 +10,23 @@ namespace ChatSessionService.Services
      {
           private readonly IMessageEntityService _messagesService;
           private readonly ILogger _logger;
+          public override async Task<GenericReply> DeleteUserChats(UserIdRequest request, ServerCallContext context)
+          {
+               try
+               {
+                    await _messagesService.DeleteUserChats(request.UserId);
+
+                    _logger.LogInformation("Chats for User with Id {UserId} were successfully deleted.", request.UserId);
+
+                    return await Task.FromResult(new GenericReply { Response = "Deleted" });
+               }
+               catch (Exception e)
+               {
+                    _logger.LogError("Error:{message}", e.Message);
+
+                    throw new RpcException(new Status(StatusCode.Internal, "Deletion Failed."));
+               }
+          }
 
           public MessagesService(IMessageEntityService messagesService, ILogger<MessagesService> logger)
           {

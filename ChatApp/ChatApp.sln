@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services.Infrastructure", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatSessionService.BL.Service.Tests", "ChatSessionService.BL.Service.Tests\ChatSessionService.BL.Service.Tests.csproj", "{99DE0C02-EE58-4B90-A193-31008CB58507}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServices", "ExternalServices\ExternalServices.csproj", "{46520518-D7F5-49A9-A0D1-B22551517DDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalServices", "ExternalServices\ExternalServices.csproj", "{46520518-D7F5-49A9-A0D1-B22551517DDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SagaOrchestrator", "SagaOrchestrator\SagaOrchestrator.csproj", "{9BF0B1C5-632F-4FA0-B7F4-6F4E1F845895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46520518-D7F5-49A9-A0D1-B22551517DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BF0B1C5-632F-4FA0-B7F4-6F4E1F845895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BF0B1C5-632F-4FA0-B7F4-6F4E1F845895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BF0B1C5-632F-4FA0-B7F4-6F4E1F845895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF0B1C5-632F-4FA0-B7F4-6F4E1F845895}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
