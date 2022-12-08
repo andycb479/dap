@@ -1,56 +1,49 @@
-﻿using Google.Protobuf;
+﻿using ExternalServices.Services.Base;
+using ExternalServices.Users;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Services.Core.Caching.Interface;
 using Services.Core.ServiceDiscovery;
-using Services.Infrastructure.Entity;
 using Services.Infrastructure.Enums;
 using Services.Infrastructure.Extensions;
 
 namespace ExternalServices.Services
 {
-     public class UsersService : IUsersService
+     public class UsersService : ExternalServiceBase, IUsersService
      {
-          private readonly IConsulService _consulService;
-          private readonly ICacheService _cacheService;
-          private readonly string _externalServiceName;
-          private readonly string _currentServiceName;
-          private readonly int _maxTimeout;
           public UsersService(IConsulService consulService, ICacheService cacheService, IConfiguration configuration)
+               : base(consulService, cacheService, configuration, "UsersService")
           {
-               _consulService = consulService;
-               _cacheService = cacheService;
-               _maxTimeout = configuration.GetValue<int?>("ServiceConfig:MaxTimeoutUsersService") ?? configuration.GetValue<int>("TaskTimeout:MaxTimeout");
-               _externalServiceName = configuration.GetValue<string>("ExternalServicesNames:UsersService") ?? "UsersService";
-               _currentServiceName = "ChatSessionService";
           }
 
           public async Task<User?> GetUserAsync(int userId)
           {
-               var cacheKey = CreateChatCacheKey(userId);
-               var user = await _cacheService.GetFromCacheAsync<User>(cacheKey);
+               var cacheKey = CreateChatCacheKey<User>(userId);
+               var user = await CacheService.GetFromCacheAsync<User>(cacheKey);
                if (user is not null)
                {
                     return user;
                }
 
-               user = await (GetUserFromExternalService(userId).TimeoutAfter(_maxTimeout));
-               await _cacheService.SetInCacheAsync(user, cacheKey, CacheExpiryType.TwoMinutes);
+               user = await (GetUserFromExternalService(userId).TimeoutAfter(MaxTimeout));
+               await CacheService.SetInCacheAsync(user, cacheKey, CacheExpiryType.TwoMinutes);
                return user;
           }
 
-          private string CreateChatCacheKey(int userId)
+          public async Task DeleteUserAsync(int userId)
           {
-               return _cacheService.CreateCacheKey(_currentServiceName, typeof(User), userId.ToString(), String.Empty);
+               var client = await GetRpcGetClient();
+          }
+
+          public async Task RollbackUserDeleteAsync(int userId)
+          {
+               var client = await GetRpcGetClient();
           }
 
           private async Task<User?> GetUserFromExternalService(int userId)
           {
-               var serviceUri = await _consulService.GetRequestUriAsync(_externalServiceName);
-
-               using var channel = GrpcChannel.ForAddress(serviceUri);
-               var client = new Users.UsersClient(channel);
+               var client = await GetRpcGetClient();
                try
                {
                     var reply = await client.GetUserAsync(new UserIdRequest() { UserId = userId });
@@ -64,6 +57,14 @@ namespace ExternalServices.Services
                {
                     return null;
                }
+          }
+
+          private async Task<Users.Users.UsersClient> GetRpcGetClient()
+          {
+               var serviceUri = await ConsulService.GetRequestUriAsync(ExternalServiceName);
+
+               using var channel = GrpcChannel.ForAddress(serviceUri);
+               return new Users.Users.UsersClient(channel);
           }
      }
 }

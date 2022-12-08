@@ -2,7 +2,7 @@
 option java_multiple_files = true;
 package users;
 
-option csharp_namespace = "ExternalServices";
+option csharp_namespace = "ExternalServices.Users";
 
 service Users {
   rpc CreateUser(User) returns (User);

@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option csharp_namespace = "ExternalServices.Messages";
+
+package messages;
+
+service Messages {
+  rpc SendMessage(SendMessageRequest) returns (GenericReply);
+  rpc GetChatMessages(ChatRequest) returns (stream Message);
+  rpc ChangeMessagesForChatToSeen(ChatRequest) returns (GenericReply);
+  rpc DeleteUserChats(UserIdRequest) returns (GenericReply);
+}
+
+message UserIdRequest {
+  int32 userId = 1;
+}
+
+message SendMessageRequest {
+  string messageContent = 1;
+  int32 fromUserId = 2;
+  int32 toUserId = 3;
+}
+
+message ChatRequest {
+  int32 requestUserId = 1;
+  int32 chatUserId = 2;
+}
+
+message Message {
+  int32 messageStatus = 1;
+  int32 fromUserId = 2;
+  int32 toUserId = 3;
+  string date = 4;
+  string messageContent = 5;
+}
+
+message GenericReply {
+  string response = 1;
+}
