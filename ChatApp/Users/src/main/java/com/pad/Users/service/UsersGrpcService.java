@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import users.GenericReply;
 import users.User;
+import users.UserAndTransactionIdRequest;
 import users.UsersRequest;
 
 import java.util.List;
@@ -149,14 +151,31 @@ public class UsersGrpcService extends users.UsersGrpc.UsersImplBase implements G
 
   @Override
   public void deleteUser(
-      users.UserIdRequest request, StreamObserver<users.GenericReply> responseObserver) {
-    if (userService.deleteUser((long) request.getUserId())) {
+      users.UserAndTransactionIdRequest request,
+      StreamObserver<users.GenericReply> responseObserver) {
+    if (userService.deleteUser((long) request.getUserId(), request.getTransactionId())) {
       users.GenericReply.Builder builder = users.GenericReply.newBuilder();
       builder.setResponse("User deleted!");
       responseObserver.onNext(builder.build());
     } else {
       responseObserver.onError(
           new StatusRuntimeException(Status.INVALID_ARGUMENT.withDescription("User not found.")));
+    }
+
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void rollbackUserDeletion(
+      UserAndTransactionIdRequest request, StreamObserver<GenericReply> responseObserver) {
+    if (userService.rollbackUserDeletion((long) request.getUserId(), request.getTransactionId())) {
+      users.GenericReply.Builder builder = users.GenericReply.newBuilder();
+      builder.setResponse("User deletion rollback executed!");
+      responseObserver.onNext(builder.build());
+    } else {
+      responseObserver.onError(
+          new StatusRuntimeException(
+              Status.INVALID_ARGUMENT.withDescription("User deletion rollback not executed.")));
     }
 
     responseObserver.onCompleted();
