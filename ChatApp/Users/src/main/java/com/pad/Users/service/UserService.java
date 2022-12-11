@@ -11,7 +11,9 @@ public interface UserService {
 
   UserDto createUser(UserDto userDto);
 
-  boolean deleteUser(Long id);
+  boolean deleteUser(Long id, String transactionId);
+
+  boolean rollbackUserDeletion(Long id, String transactionId);
 
   UserDto updateUser(UserDto userDto);
 
