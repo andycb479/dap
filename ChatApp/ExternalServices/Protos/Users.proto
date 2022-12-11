@@ -1,8 +1,6 @@
-﻿syntax = "proto3";
+syntax = "proto3";
 option java_multiple_files = true;
 package users;
-
-option csharp_namespace = "ExternalServices.Users";
 
 service Users {
   rpc CreateUser(User) returns (User);
@@ -11,7 +9,8 @@ service Users {
   rpc GetUserStatus(UserIdRequest) returns (UserStatus);
   rpc ChangeUserStatus(UserStatus) returns (User);
   rpc UpdateUser(User) returns (User);
-  rpc DeleteUser(UserIdRequest) returns (GenericReply);
+  rpc DeleteUser(UserAndTransactionIdRequest) returns (GenericReply);
+  rpc RollbackUserDeletion(UserAndTransactionIdRequest) returns (GenericReply);
 }
 
 message User{
@@ -23,6 +22,11 @@ message User{
 
 message UserIdRequest{
   int32 userId = 1;
+}
+
+message UserAndTransactionIdRequest{
+  int32 userId = 1;
+  string transactionId = 2;
 }
 
 message UserStatus{

@@ -8,22 +8,20 @@ namespace ExternalServices.Services.Base
      {
           protected readonly IConsulService ConsulService;
           protected readonly ICacheService CacheService;
+          private readonly IConfiguration _configuration;
           protected readonly string ExternalServiceName;
-          protected readonly string CurrentServiceName;
-          protected readonly int MaxTimeout;
 
-          protected ExternalServiceBase(IConsulService consulService, ICacheService cacheService, IConfiguration configuration, string currentServiceName)
+          protected ExternalServiceBase(IConsulService consulService, ICacheService cacheService, IConfiguration configuration, string externalServiceName)
           {
                ConsulService = consulService;
                CacheService = cacheService;
-               CurrentServiceName = currentServiceName;
-               MaxTimeout = configuration.GetValue<int?>("ServiceConfig:MaxTimeoutUsersService") ?? configuration.GetValue<int>("TaskTimeout:MaxTimeout");
-               ExternalServiceName = configuration.GetValue<string>("ExternalServicesNames:UsersService") ?? "UsersService";
+               _configuration = configuration;
+               ExternalServiceName = externalServiceName;
           }
 
-          public string CreateChatCacheKey<T>(int userId)
+          public string CreateChatCacheKey<T>(string clientIdentifier, int userId)
           {
-               return CacheService.CreateCacheKey(CurrentServiceName, typeof(T), userId.ToString(), String.Empty);
+               return CacheService.CreateCacheKey(clientIdentifier, typeof(T), userId.ToString(), String.Empty);
           }
      }
 }

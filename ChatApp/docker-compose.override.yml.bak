@@ -32,7 +32,7 @@ services:
           - ServiceConfig__Address=chatsessionservice1
           - ServiceConfig__Port=80
           - ServiceConfig__MaxTimeoutUsersService=3000
-          - ServiceConfig__MaxConcurrentTasks=0
+          - ServiceConfig__MaxConcurrentTasks=10
         ports:
             - 9100:80
         depends_on:

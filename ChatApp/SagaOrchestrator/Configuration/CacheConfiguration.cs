@@ -1,0 +1,19 @@
+﻿using Services.Core.Caching;
+using Services.Core.Caching.Interface;
+
+namespace SagaOrchestrator.Configuration;
+
+public static class CacheConfiguration
+{
+     public static void ConfigureRedisCache(this IServiceCollection services, IConfiguration configuration)
+     {
+
+          services.AddStackExchangeRedisCache(options =>
+          {
+               options.Configuration = configuration.GetValue<string>("ServiceConfig:RedisHostname") ?? "localhost,user=orchestrator,password=password,abortConnect=false";
+               options.InstanceName = configuration.GetValue<string>("ServiceConfig:RedisInstanceName") ?? "Cache";
+          });
+          services.AddScoped<ICacheRepository, CacheRepository>();
+          services.AddScoped<ICacheService, CacheService>();
+     }
+}

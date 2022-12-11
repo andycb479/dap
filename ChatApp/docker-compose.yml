@@ -56,6 +56,17 @@ services:
             dockerfile: ChatSessionService/Dockerfile
         networks:
             - common_network
+            
+   orchestrator:
+        container_name: orchestrator
+        image: orchestrator:latest
+        restart: on-failure
+        hostname: orchestrator
+        build:
+            context: .
+            dockerfile: SagaOrchestrator/Dockerfile
+        networks:
+            - common_network
 
    usersservice:
         container_name: usersservice

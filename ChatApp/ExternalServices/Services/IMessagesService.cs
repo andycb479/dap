@@ -2,7 +2,5 @@
 
 public interface IMessagesService
 {
-     Task DeleteUserMessages(int userId);
-
-     Task RollbackDeleteUserMessages(int userId);
+     Task DeleteUserMessages(string clientIdentifier, int userId);
 }

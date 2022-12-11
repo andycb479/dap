@@ -58,7 +58,7 @@ namespace ChatSessionService.BL.Service
                messages = await _messagesRepository.GetChatMessages(requestUserId, chatUserId);
                messages = messages.OrderBy(x => x.CreatedAt).ToList();
 
-               await _cacheService.SetInCacheAsync(messages, chatCacheKey, CacheExpiryType.TenMinutes);
+               await _cacheService.SetInCacheAsync(messages, chatCacheKey, CacheExpiryType.TwoMinutes);
 
                return messages;
           }
@@ -66,6 +66,11 @@ namespace ChatSessionService.BL.Service
           public async Task ChangeMessagesForChatToSeen(int requestUserId, int chatUserId)
           {
                await _messagesRepository.UpdateUserChatMessagesToSeen(requestUserId, chatUserId);
+          }
+
+          public async Task DeleteUserChats(int userId)
+          {
+               await _messagesRepository.DeleteUserChats(userId);
           }
 
           private string CreateChatCacheKey(int requestUserId, int chatUserId)
@@ -109,13 +114,13 @@ namespace ChatSessionService.BL.Service
                     throw new ValidationException("Invalid receiver.");
                }
 
-               var fromUser = await _usersService.GetUserAsync(requestUserId);
+               var fromUser = await _usersService.GetUserAsync(_serviceName, requestUserId);
                if (fromUser is null)
                {
                     throw new ValidationException("Sender user cannot be found!");
                }
 
-               var toUser = await _usersService.GetUserAsync(chatUserId);
+               var toUser = await _usersService.GetUserAsync(_serviceName, chatUserId);
                if (toUser is null)
                {
                     throw new ValidationException("Receiver user cannot be found!");

@@ -1,36 +1,31 @@
-using ExternalServices.Services;
-using OpenSleigh.Core.DependencyInjection;
-using OpenSleigh.Persistence.InMemory;
-using OpenSleigh.Persistence.Mongo;
-using SagaOrchestrator.Sagas;
+using SagaOrchestrator.Configuration;
+using SagaOrchestrator.Services;
+using Serilog;
+using Services.Core.ServiceDiscovery;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
+builder.Host.UseSerilog((hostContext, services, configuration) =>
+{
+     configuration.WriteTo.Console();
+});
+
+builder.Services.AddConsul(builder.Configuration.GetServiceConfig());
 
 // Add services to the container.
 builder.Services.AddGrpc();
-builder.Services.AddOpenSleigh(cfg =>
-{
-     cfg.UseInMemoryTransport();
 
-     var mongoCfg = new MongoConfiguration("mongodb+srv://andy007:sWjQki2BWK2wdbZ3@cluster0.8nibr.mongodb.net/?retryWrites=true&w=majority",
-          "dap");
-     cfg.UseMongoPersistence(mongoCfg);
+builder.Services.ConfigureServices(builder.Configuration);
+builder.Services.ConfigureInfrastructure(builder.Configuration);
+builder.Services.ConfigureRedisCache(builder.Configuration);
 
-     cfg.AddSaga<DeleteUserSaga, DeleteUserSagaState>()
-          .UseStateFactory<DeleteUsersServiceUser>(msg => new DeleteUserSagaState(msg.CorrelationId))
-          .UseInMemoryTransport();
-});
-
-builder.Services.AddScoped<IMessagesService, MessagesService>();
-builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.ConfigureSagas(builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-// app.MapGrpcService<GreeterService>();
+app.MapGrpcService<OrchestratorService>();
+app.MapGrpcService<HealthCheckService>();
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();

@@ -1,3 +1,4 @@
 user default off
 user chatsessionservice on >password ~Cachechatsessionservice* +get +@all -@dangerous +info
+user orchestrator on >password ~Cacheorchestrator* +get +@all -@dangerous +info
 user replica-user on >somepassword +psync +replconf +ping

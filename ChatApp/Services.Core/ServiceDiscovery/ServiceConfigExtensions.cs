@@ -13,11 +13,11 @@ namespace Services.Core.ServiceDiscovery
 
                var serviceConfig = new ServiceConfig
                {
-                    Id = configuration.GetValue<string>("ServiceConfig:Id") ?? "ChatSessionService-9100",
-                    Name = configuration.GetValue<string>("ServiceConfig:Name") ?? "ChatSessionService",
-                    Address = configuration.GetValue<string>("ServiceConfig:Address") ?? "localhost",
-                    Port = configuration.GetValue<int>("ServiceConfig:Port") == 0 ? 5103 : configuration.GetValue<int>("ServiceConfig:Port"),
-                    DiscoveryAddress = configuration.GetValue<Uri>("ServiceConfig:DiscoveryAddress") ?? new Uri("http://localhost:8500"),
+                    Id = configuration.GetValue<string>("ServiceConfig:Id"),
+                    Name = configuration.GetValue<string>("ServiceConfig:Name"),
+                    Address = configuration.GetValue<string>("ServiceConfig:Address"),
+                    Port = configuration.GetValue<int>("ServiceConfig:Port"),
+                    DiscoveryAddress = configuration.GetValue<Uri>("ServiceConfig:DiscoveryAddress"),
                };
 
                return serviceConfig;

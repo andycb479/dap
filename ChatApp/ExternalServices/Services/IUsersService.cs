@@ -1,12 +1,12 @@
-﻿using ExternalServices.Users;
+﻿using Users;
 
 namespace ExternalServices.Services;
 
 public interface IUsersService
 {
-     Task<User?> GetUserAsync(int userId);
+     Task<User?> GetUserAsync(string clientIdentifier, int userId);
 
-     Task DeleteUserAsync(int userId);
+     Task DeleteUserAsync(string clientIdentifier, int userId, Guid transactionId);
 
-     Task RollbackUserDeleteAsync(int userId);
+     Task RollbackUserDeleteAsync(string clientIdentifier, int userId, Guid transactionId);
 }

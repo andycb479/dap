@@ -2,5 +2,5 @@
 
 public interface IExternalServiceBase
 {
-     string CreateChatCacheKey<T>(int userId);
+     string CreateChatCacheKey<T>(string clientIdentifier, int userId);
 }

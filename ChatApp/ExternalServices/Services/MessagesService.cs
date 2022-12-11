@@ -15,34 +15,21 @@ namespace ExternalServices.Services
           {
           }
 
-          public async Task DeleteUserMessages(int userId)
+          public async Task DeleteUserMessages(string clientIdentifier, int userId)
           {
-               var client = await GetRpcGetClient();
+               var serviceUri = await ConsulService.GetRequestUriAsync(ExternalServiceName);
+
+               using var channel = GrpcChannel.ForAddress(serviceUri);
+               var client = new Messages.Messages.MessagesClient(channel);
+
                try
                {
-                    var reply = await client.DeleteUserChatsAsync(new UserIdRequest() { UserId = 2 });
+                   await client.DeleteUserChatsAsync(new UserIdRequest() { UserId = userId });
                }
                catch (RpcException e) when (e.StatusCode == StatusCode.Unavailable)
                {
-                    throw new Exception("No users service instance is available!");
+                    throw new Exception("No Chat Session Service is available!");
                }
-               catch (RpcException e) when (e.StatusCode == StatusCode.Unknown)
-               {
-               }
-          }
-
-          public async Task RollbackDeleteUserMessages(int userId)
-          {
-               var client = await GetRpcGetClient();
-          }
-
-          private async Task<Messages.Messages.MessagesClient> GetRpcGetClient()
-          {
-               //var serviceUri = await _consulService.GetRequestUriAsync(_externalServiceName);
-               var serviceUri = new UriBuilder() { Host = "localhost", Port = 5103 }.Uri;
-
-               using var channel = GrpcChannel.ForAddress(serviceUri);
-               return new Messages.Messages.MessagesClient(channel);
           }
      }
 }

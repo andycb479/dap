@@ -6,10 +6,10 @@ namespace SagaOrchestrator.Services
 {
      public class OrchestratorService : Orchestrator.OrchestratorBase
      {
-          private readonly ILogger _logger;
+          private readonly Serilog.ILogger _logger;
           private readonly IMessageBus _orchestratorMessageBus;
 
-          public OrchestratorService(ILogger logger, IMessageBus orchestratorMessageBus)
+          public OrchestratorService(Serilog.ILogger logger, IMessageBus orchestratorMessageBus)
           {
                _logger = logger;
                _orchestratorMessageBus = orchestratorMessageBus;
@@ -17,7 +17,7 @@ namespace SagaOrchestrator.Services
 
           public override async Task<GenericReply> DeleteUser(DeleteUserRequest request, ServerCallContext context)
           {
-               _logger.LogInformation("Starting Deletion User Transaction");
+               _logger.Information("Starting Deletion User Transaction");
 
                await _orchestratorMessageBus.PublishAsync(new DeleteUsersServiceUser(Guid.NewGuid(), Guid.NewGuid(),
                     request.UserId));

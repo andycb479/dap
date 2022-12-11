@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\healthCheck.proto" />
     <None Remove="Protos\orchestrator.proto" />
   </ItemGroup>
 
@@ -18,6 +19,9 @@
     <PackageReference Include="OpenSleigh.Core" Version="2.0.2" />
     <PackageReference Include="OpenSleigh.Persistence.InMemory" Version="2.0.2" />
     <PackageReference Include="OpenSleigh.Persistence.Mongo" Version="2.0.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\healthCheck.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\orchestrator.proto" GrpcServices="Server" />
   </ItemGroup>
 
