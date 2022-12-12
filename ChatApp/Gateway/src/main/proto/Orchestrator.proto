@@ -1,0 +1,15 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package orchestrator;
+
+service Orchestrator {
+  rpc DeleteUser(DeleteUserRequest) returns (GenericReply);
+}
+
+message DeleteUserRequest {
+  int32 userId = 1;
+}
+
+message GenericReply {
+  string response = 1;
+}
