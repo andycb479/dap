@@ -48,10 +48,10 @@ namespace SagaOrchestrator.Sagas
 
           public async Task HandleAsync(IMessageContext<DeleteUsersServiceUser> context, CancellationToken cancellationToken = default)
           {
+               State.UserId = context.Message.UserId;
+
                _logger.LogInformation($"Starting Saga {context.Message.CorrelationId}");
                _logger.LogInformation($"Starting deletion of userId:{State.UserId} from Users Service.");
-
-               State.UserId = context.Message.UserId;
 
                await _usersService.DeleteUserAsync(_clientIdentifier, context.Message.UserId, State.Id);
 
