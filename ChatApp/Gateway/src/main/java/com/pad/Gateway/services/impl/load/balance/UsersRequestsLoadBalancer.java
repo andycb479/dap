@@ -1,6 +1,7 @@
 package com.pad.Gateway.services.impl.load.balance;
 
 import com.pad.Gateway.dto.user.UserDto;
+import com.pad.Gateway.entity.AvailableSagaService;
 import com.pad.Gateway.entity.AvailableUsersService;
 import com.pad.Gateway.services.AvailableServicesLookup;
 import com.pad.Gateway.services.impl.load.balance.distribution.FinalEntityRequestBuilderAndExecutor;
@@ -8,6 +9,7 @@ import com.pad.Gateway.services.impl.load.balance.distribution.user.EmptyResUser
 import com.pad.Gateway.services.impl.load.balance.distribution.user.MultipleUsersResRequestBuilder;
 import com.pad.Gateway.services.impl.load.balance.distribution.user.SingleFinalUserResRequestBuilder;
 import lombok.extern.slf4j.Slf4j;
+import orchestrator.DeleteUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import users.User;
@@ -54,6 +56,10 @@ public class UsersRequestsLoadBalancer {
     return usersService;
   }
 
+  private AvailableSagaService getSagaService() {
+    return availableServicesLookup.getAvailableSagaService();
+  }
+
   public UserDto distributeCreateUserRequest(User request) {
     Supplier<Object> userSupplier = () -> getNextAvailableService().createUserRequest(request);
     return (UserDto)
@@ -76,6 +82,11 @@ public class UsersRequestsLoadBalancer {
 
   public void distributeDeleteUserRequest(UserIdRequest request) {
     Supplier<Object> userSupplier = () -> getNextAvailableService().deleteUserRequest(request);
+    emptyResUserRequestBuilder.createAndExecuteRequest(userSupplier, availableServicesLookup);
+  }
+
+  public void distributeDeleteUserRequestSaga(DeleteUserRequest request) {
+    Supplier<Object> userSupplier = () -> getSagaService().deleteUserRequest(request);
     emptyResUserRequestBuilder.createAndExecuteRequest(userSupplier, availableServicesLookup);
   }
 

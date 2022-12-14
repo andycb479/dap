@@ -4,6 +4,7 @@ import com.orbitz.consul.Consul;
 import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.model.health.ServiceHealth;
 import com.pad.Gateway.entity.AvailableChatService;
+import com.pad.Gateway.entity.AvailableSagaService;
 import com.pad.Gateway.entity.AvailableUsersService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,12 @@ public class AvailableServicesLookup {
   private final List<AvailableChatService> availableChatServices = new LinkedList<>();
   private final List<AvailableUsersService> availableUsersServices = new LinkedList<>();
 
+  private AvailableSagaService availableSagaService = null;
+
   private List<ServiceHealth> lastScannedChatNodes = new LinkedList<>();
   private List<ServiceHealth> lastScannedUsersNodes = new LinkedList<>();
+
+  private ServiceHealth lastScannedSagaService = null;
 
   private Consul client;
 
@@ -65,6 +70,8 @@ public class AvailableServicesLookup {
                 healthClient.getHealthyServiceInstances("ChatSessionService").getResponse();
             List<ServiceHealth> usersNodes =
                 healthClient.getHealthyServiceInstances("UsersService").getResponse();
+            List<ServiceHealth> sagaNodes =
+                healthClient.getHealthyServiceInstances("Orchestrator").getResponse();
 
             if (!new HashSet<>(lastScannedChatNodes).containsAll(chatNodes)) {
               log.info("Scanning for new ChatSessionService instances...");
@@ -72,12 +79,11 @@ public class AvailableServicesLookup {
               lastScannedChatNodes = chatNodes;
               availableChatServices.clear();
               lastScannedChatNodes.forEach(
-                  node -> {
-                    availableChatServices.add(
-                        new AvailableChatService(
-                            String.valueOf(node.getService().getPort()),
-                            node.getService().getAddress()));
-                  });
+                  node ->
+                      availableChatServices.add(
+                          new AvailableChatService(
+                              String.valueOf(node.getService().getPort()),
+                              node.getService().getAddress())));
             }
 
             if (!new HashSet<>(lastScannedUsersNodes).containsAll(usersNodes)) {
@@ -88,12 +94,19 @@ public class AvailableServicesLookup {
               lastScannedUsersNodes = usersNodes;
               availableUsersServices.clear();
               lastScannedUsersNodes.forEach(
-                  node -> {
-                    availableUsersServices.add(
-                        new AvailableUsersService(
-                            String.valueOf(node.getService().getPort()),
-                            node.getService().getAddress()));
-                  });
+                  node ->
+                      availableUsersServices.add(
+                          new AvailableUsersService(
+                              String.valueOf(node.getService().getPort()),
+                              node.getService().getAddress())));
+            }
+
+            if (lastScannedSagaService != sagaNodes.get(0)) {
+              lastScannedSagaService = sagaNodes.get(0);
+              availableSagaService =
+                  new AvailableSagaService(
+                      String.valueOf(sagaNodes.get(0).getService().getPort()),
+                      sagaNodes.get(0).getService().getAddress());
             }
 
             try {
@@ -112,6 +125,7 @@ public class AvailableServicesLookup {
       availableChatServices.add(new AvailableChatService("9100", "127.0.0.1"));
       availableChatServices.add(new AvailableChatService("9400", "127.0.0.1"));
       availableUsersServices.add(new AvailableUsersService("9300", "127.0.0.1"));
+      availableSagaService = new AvailableSagaService("9700", "127.0.0.1");
     } else {
       Thread thread = new Thread(runnable);
       thread.start();
@@ -124,5 +138,9 @@ public class AvailableServicesLookup {
 
   public List<AvailableUsersService> getAvailableUsersServices() {
     return availableUsersServices;
+  }
+
+  public AvailableSagaService getAvailableSagaService() {
+    return availableSagaService;
   }
 }

@@ -5,6 +5,7 @@ import com.pad.Gateway.dto.user.UserDto;
 import com.pad.Gateway.services.UserService;
 import com.pad.Gateway.services.impl.load.balance.UsersRequestsLoadBalancer;
 import lombok.extern.slf4j.Slf4j;
+import orchestrator.DeleteUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import users.User;
@@ -63,9 +64,8 @@ public class UsersServiceImpl implements UserService {
 
   @Override
   public void deleteUser(int id) {
-    UserIdRequest request = UserIdRequest.newBuilder().setUserId(id).build();
-    Runnable runnable = () -> loadBalancer.distributeDeleteUserRequest(request);
-
+    DeleteUserRequest request = DeleteUserRequest.newBuilder().setUserId(id).build();
+    Runnable runnable = () -> loadBalancer.distributeDeleteUserRequestSaga(request);
     getUserServiceCB().decorateRunnable(runnable).run();
   }
 
